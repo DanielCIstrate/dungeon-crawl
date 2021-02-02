@@ -19,9 +19,7 @@ public abstract class Actor implements Drawable {
         cell = nextCell;
     }
 
-    public int getHealth() {
-        return health;
-    }
+    public int getHealth() { return health; }
 
     public Cell getCell() {
         return cell;

@@ -1,19 +1,27 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Actor;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import javax.swing.plaf.basic.BasicArrowButton;
 
 public class    Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -32,11 +40,19 @@ public class    Main extends Application {
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
+        ui.setVgap(10);
 
         ui.add(new Label("Health: "), 0, 0);
         ui.add(healthLabel, 1, 0);
 
+        Button pickUp = new Button("Pick Up");
+        pickUp.setVisible(false);
+
+        ui.add(pickUp,0,1);
+
+
         BorderPane borderPane = new BorderPane();
+
 
         borderPane.setCenter(canvas);
         borderPane.setRight(ui);
@@ -45,6 +61,13 @@ public class    Main extends Application {
         primaryStage.setScene(scene);
         refresh();
         scene.setOnKeyPressed(this::onKeyPressed);
+        scene.setOnKeyReleased(keyEvent -> {
+            pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);
+        });
+
+
+
+
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();

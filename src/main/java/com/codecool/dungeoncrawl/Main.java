@@ -3,13 +3,9 @@ package com.codecool.dungeoncrawl;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-
+import com.codecool.dungeoncrawl.logic.items.Item;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
-
-import com.codecool.dungeoncrawl.logic.items.Item;
-
-
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -193,7 +189,7 @@ public class    Main extends Application {
         if (newLogLength > MAX_LOG_LENGTH) {
             newLogText = logStringBuilder
                     .subSequence(Math.max(0,newLogLength-MAX_LOG_LENGTH), currentLogLength)
-                    .toString() ;
+                    .toString();
             logStringBuilder.setLength(0);
             logStringBuilder.append(newLogText.substring(MAX_LOG_LENGTH/2));
         }
@@ -228,10 +224,8 @@ public class    Main extends Application {
                 }
             }
         }
-        if (getPickUpButton() != null) {
-            getPickUpButton().setVisible(map.getPlayer().getCell().getItem() != null);
-        }
-        pushInLog("Refresh happened!");
+
+//        pushInLog("Refresh happened!");
         healthLabel.setText("" + map.getPlayer().getHealth());
     }
 }

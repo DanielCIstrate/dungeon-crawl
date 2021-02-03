@@ -3,8 +3,13 @@ package com.codecool.dungeoncrawl;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+
+import com.codecool.dungeoncrawl.logic.items.Item;
+
+
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -15,10 +20,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class    Main extends Application {
     public static final Integer MAX_LOG_LENGTH = 1000;
@@ -28,6 +39,7 @@ public class    Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+
     GridPane uiDashboard = new GridPane();
 
     StringBuilder logStringBuilder = new StringBuilder(MAX_LOG_LENGTH / 10);
@@ -36,6 +48,11 @@ public class    Main extends Application {
     ScrollPane scrollForLogArea = new ScrollPane();
     TextArea logArea = new TextArea();
 
+    Button pickUp = new Button("Pick Up");
+    List<Item> inventory = new ArrayList<>();
+    Button inventoryButton = new Button("Inventory");
+
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -43,22 +60,39 @@ public class    Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+
         pushInLog("Log me... \tRight about now\tThe funk soul brother!");
         uiDashboard.setPrefWidth(200);
         uiDashboard.setPadding(new Insets(10));
         uiDashboard.setVgap(10);
+        //set minimum width for first column
+        ColumnConstraints constraintCol1 = new ColumnConstraints();
+        constraintCol1.setMinWidth(70);
+        uiDashboard.getColumnConstraints().addAll(constraintCol1);
 
         uiDashboard.add(new Label("Health: "), 0, 0);
-        uiDashboard.add(healthLabel, 1, 0);
+        uiDashboard.add(healthLabel, 2, 0);
 
-        Button pickUp = new Button("Pick Up");
+
+
+
         pickUp.setVisible(false);
+        pickUp.managedProperty().bind(pickUp.visibleProperty());
+        pickUp.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent ->{
+            inventory.add(map.getPlayer().getCell().getItem());
+            pushInLog("Items: ");
+            for (Item item: inventory) {
+                pushInLog(item.getClass().getSimpleName());
+                map.getPlayer().getCell().setItem(null);
+            }
+        });
 
 
-        uiDashboard.add(pickUp,0,1);
+        this.uiDashboard.add(pickUp,0,1);
 
 
         GridPane uiBottomPane = new GridPane();
+
 
 
         scrollForLogArea.setMinHeight(80);
@@ -79,17 +113,32 @@ public class    Main extends Application {
 //        uiBottomPane.setStyle("-fx-background-color: BLUE;");
         uiBottomPane.getChildren().add(scrollForLogArea);
 
+
+        inventoryButton.setDisable(true);
+        uiDashboard.add(inventoryButton,0,2);
+
+
+
         BorderPane borderPane = new BorderPane();
 
 
         borderPane.setCenter(canvas);
         borderPane.setBottom(uiBottomPane);
-        borderPane.setRight(uiDashboard);
+        borderPane.setRight(this.uiDashboard);
 
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
-        scene.addEventFilter(KeyEvent.KEY_PRESSED, this::onKeyPressed);
+
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+            onKeyPressed(keyEvent);
+            keyEvent.consume();
+        });
+
+
+
+
+
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
@@ -161,6 +210,8 @@ public class    Main extends Application {
     }
 
     private void refresh() {
+        pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);
+        inventoryButton.setDisable(inventory.isEmpty());
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {

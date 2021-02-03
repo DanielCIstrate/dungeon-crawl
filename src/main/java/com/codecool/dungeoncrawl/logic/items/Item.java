@@ -5,10 +5,13 @@ import com.codecool.dungeoncrawl.logic.Drawable;
 
 public abstract class Item implements Drawable {
     private Cell cell;
+    public Integer durability;
+
 
     public Item(Cell cell) {
         this.cell = cell;
         this.cell.setItem(this);
+        this.durability = 100;
     }
 
     public Cell getCell() {
@@ -16,4 +19,16 @@ public abstract class Item implements Drawable {
     }
 
     public abstract String getTileName();
+
+    public boolean getUnlockProperty() {
+        return false;
+    };
+
+    public Integer getDurability() {
+        return this.durability;
+    };
+
+    public void setDurabilty(Integer durability) {
+        this.durability = durability;
+    }
 }

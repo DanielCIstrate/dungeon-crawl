@@ -1,27 +1,26 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
-import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-import com.codecool.dungeoncrawl.logic.actors.Actor;
+import com.codecool.dungeoncrawl.logic.items.Item;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import javax.swing.plaf.basic.BasicArrowButton;
+import java.util.ArrayList;
+import java.util.List;
 
 public class    Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -30,6 +29,8 @@ public class    Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Button pickUp = new Button("Pick Up");
+    List<Item> inventory = new ArrayList<>();
 
     public static void main(String[] args) {
         launch(args);
@@ -41,14 +42,32 @@ public class    Main extends Application {
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
         ui.setVgap(10);
+        //set minimum width for first column
+        ColumnConstraints constraintCol1 = new ColumnConstraints();
+        constraintCol1.setMinWidth(70);
+        ui.getColumnConstraints().addAll(constraintCol1);
 
         ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
+        ui.add(healthLabel, 2, 0);
 
-        Button pickUp = new Button("Pick Up");
+
+
         pickUp.setVisible(false);
+        pickUp.managedProperty().bind(pickUp.visibleProperty());
+        pickUp.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent ->{
+            inventory.add(map.getPlayer().getCell().getItem());
+            System.out.println("Items: ");
+            for (Item item: inventory) {
+                System.out.println(item.getClass().getSimpleName());
+                map.getPlayer().getCell().setItem(null);
+            }
+        });
 
         ui.add(pickUp,0,1);
+
+        Button inventoryButton = new Button("Inventory");
+        inventoryButton.setDisable(true);
+        ui.add(inventoryButton,0,2);
 
 
         BorderPane borderPane = new BorderPane();
@@ -60,9 +79,9 @@ public class    Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
-        scene.setOnKeyReleased(keyEvent -> {
-            pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+            onKeyPressed(keyEvent);
+            keyEvent.consume();
         });
 
 
@@ -95,6 +114,8 @@ public class    Main extends Application {
     }
 
     private void refresh() {
+        pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);
+        inventory.s.set(inventory.isEmpty());
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {

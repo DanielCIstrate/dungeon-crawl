@@ -15,5 +15,4 @@ public abstract class Item implements Drawable {
         return cell;
     }
 
-    public abstract String getTileName();
 }

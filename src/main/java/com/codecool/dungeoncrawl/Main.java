@@ -31,6 +31,7 @@ public class    Main extends Application {
     Label healthLabel = new Label();
     Button pickUp = new Button("Pick Up");
     List<Item> inventory = new ArrayList<>();
+    Button inventoryButton = new Button("Inventory");
 
     public static void main(String[] args) {
         launch(args);
@@ -65,7 +66,7 @@ public class    Main extends Application {
 
         ui.add(pickUp,0,1);
 
-        Button inventoryButton = new Button("Inventory");
+
         inventoryButton.setDisable(true);
         ui.add(inventoryButton,0,2);
 
@@ -115,7 +116,7 @@ public class    Main extends Application {
 
     private void refresh() {
         pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);
-        inventory.s.set(inventory.isEmpty());
+        inventoryButton.setDisable(inventory.isEmpty());
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {

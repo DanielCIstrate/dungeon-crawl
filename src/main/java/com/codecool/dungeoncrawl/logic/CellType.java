@@ -11,7 +11,8 @@ public enum CellType {
     STATUE1("candleStatue"),
     STATUE2("campFire"),
     LAKE("lake"),
-    FLOOR2("footpath");
+    FLOOR2("footpath"),
+    GATE_FINAL("finalPortal");
 
     private final String tileName;
 

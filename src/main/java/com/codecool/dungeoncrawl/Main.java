@@ -13,7 +13,9 @@ import javafx.collections.ObservableList;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -23,10 +25,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -182,12 +181,40 @@ public class    Main extends Application {
 
 
 
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if(map.getPlayer().getCell().getType().equals(CellType.GATE_FINAL)) {
+                System.out.println("Final");
+                Parent over = isOver();
+                scene.setRoot(over);
+                refresh();
+                keyEvent.consume();
+
+
+            }
+        });
+
+
+
 
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
     }
 
 // Example of getting elements from parent Panes, Scene, etc (in this case uiDashboard)
+
+    public Parent isOver(){
+        Pane over_screen = new Pane();
+
+        VBox elements = new VBox();
+        elements.setPrefSize(1280, 720);
+        elements.setAlignment(Pos.CENTER);
+        Text gameOver = new Text("Well Done!\nYou have finished the game!");
+        elements.getChildren().addAll(gameOver);
+        over_screen.getChildren().add(elements);
+
+        return over_screen;
+
+    }
 
     private Button getPickUpButton() {
         ObservableList<Node> nodeElementsList;

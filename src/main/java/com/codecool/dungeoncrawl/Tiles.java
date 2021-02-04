@@ -38,6 +38,7 @@ public class Tiles {
         tileMap.put("candleStatue", new Tile(4,15));
         tileMap.put("campFire", new Tile(14,10));
         tileMap.put("footpath",new Tile(1,0));
+        tileMap.put("finalPortal",new Tile(1,9));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {

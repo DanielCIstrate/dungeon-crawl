@@ -1,12 +1,18 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
+import com.codecool.dungeoncrawl.Main;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Drawable;
+import com.codecool.dungeoncrawl.logic.items.Item;
+import com.codecool.dungeoncrawl.logic.items.Key;
+
+import java.util.stream.Stream;
 
 public abstract class Actor implements Drawable {
     private Cell cell;
     private int health = 10;
+    private Key o;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -37,8 +43,18 @@ public abstract class Actor implements Drawable {
         return cell.getY();
     }
 
+    private boolean containsKey() {
+        return Main.getInventory().stream().map(Item::getTileName).anyMatch("key"::equals);
+    }
+
     public boolean canMove(Cell targetCell) {
         if (targetCell.getType().equals(CellType.WALL)) {return false;}
+        if (targetCell.getType().equals(CellType.CLOSED_DOOR)) {
+            if (containsKey()) {
+                targetCell.setType(CellType.OPEN_DOOR);
+            }
+            return false;
+        }
 
         // Encounter condition is true here and should call onEncounter methods
         // for the two actors when that is implemented

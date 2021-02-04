@@ -55,8 +55,12 @@ public class    Main extends Application {
     TextArea logArea = new TextArea();
 
     Button pickUp = new Button("Pick Up");
-    List<Item> inventory = new LinkedList<>();
+    static List<Item> inventory = new LinkedList<>();
     Button inventoryButton = new Button("Inventory");
+
+    public static List<Item> getInventory() {
+        return inventory;
+    }
 
 
     public static void main(String[] args) {
@@ -130,6 +134,7 @@ public class    Main extends Application {
                         //se the window not to obstruct the main window
                         dialog.initModality(Modality.NONE);
                         dialog.initOwner(primaryStage);
+                        dialog.setTitle("Inventory");
                         VBox dialogBox = new VBox(20);
                         System.out.println(inventoryToString());
                         Text inventoryContents = new Text (inventoryToString());
@@ -143,6 +148,11 @@ public class    Main extends Application {
         );
         uiDashboard.add(inventoryButton,0,2);
 
+//
+//        unlockButton.setDisable(true);
+//        unlockButton.setVisible(false);
+//        unlockButton.managedProperty().bind(unlockButton.visibleProperty());
+//
 
 
 
@@ -179,7 +189,7 @@ public class    Main extends Application {
         for (Node element : nodeElementsList ) {
             if (element instanceof Button) {
                 Button elementAsButton = (Button) element;
-                if (elementAsButton.getText() == "Pick Up") {
+                if (elementAsButton.getText().equals("Pick Up")) {
                     return elementAsButton;
                 }
             }

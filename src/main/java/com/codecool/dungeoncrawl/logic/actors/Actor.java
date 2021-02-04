@@ -12,8 +12,6 @@ import java.util.stream.Stream;
 public abstract class Actor implements Drawable {
     private Cell cell;
     private int health = 10;
-    private Key o;
-
     public Actor(Cell cell) {
         this.cell = cell;
         this.cell.setActor(this);
@@ -48,7 +46,13 @@ public abstract class Actor implements Drawable {
     }
 
     public boolean canMove(Cell targetCell) {
-        if (targetCell.getType().equals(CellType.WALL)) {return false;}
+        if (targetCell.getType().equals(CellType.WALL) ||
+        targetCell.getType().equals(CellType.WALL2) ||
+        targetCell.getType().equals(CellType.STATUE1) ||
+        targetCell.getType().equals(CellType.STATUE2) ||
+        targetCell.getType().equals(CellType.LAKE)) {
+            return false;
+        }
         if (targetCell.getType().equals(CellType.CLOSED_DOOR)) {
             if (containsKey()) {
                 targetCell.setType(CellType.OPEN_DOOR);

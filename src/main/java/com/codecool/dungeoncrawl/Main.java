@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 
@@ -30,16 +31,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 
 public class    Main extends Application {
     public static final Integer MAX_LOG_LENGTH = 1000;
-    GameMap map = MapLoader.loadMap();
+    GameMap map = MapLoader.loadMap("/map.txt");
+    GameMap mapOfLevel2 = MapLoader.loadMap("/map2.txt");
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -143,6 +142,7 @@ public class    Main extends Application {
                         Scene dialogScene = new Scene(dialogBox, 300,200);
                         dialog.setScene(dialogScene);
                         dialog.show();
+                        actionEvent.consume();
                     }
                 }
         );
@@ -172,7 +172,13 @@ public class    Main extends Application {
             keyEvent.consume();
         });
 
-
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
+                map = mapOfLevel2;
+                refresh();
+                keyEvent.consume();
+                }
+        });
 
 
 
@@ -271,6 +277,8 @@ public class    Main extends Application {
         pushInLog("Refresh happened!");
         healthLabel.setText("" + map.getPlayer().getHealth());
     }
+
+
 
     private String inventoryToString() {
         StringBuilder contents = new StringBuilder("Items:\n");

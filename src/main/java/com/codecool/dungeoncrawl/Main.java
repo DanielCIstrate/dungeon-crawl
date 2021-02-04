@@ -5,7 +5,10 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.collections.ObservableList;
+
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -20,10 +23,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -45,7 +53,7 @@ public class    Main extends Application {
     TextArea logArea = new TextArea();
 
     Button pickUp = new Button("Pick Up");
-    List<Item> inventory = new ArrayList<>();
+    List<Item> inventory = new LinkedList<>();
     Button inventoryButton = new Button("Inventory");
 
 
@@ -81,6 +89,7 @@ public class    Main extends Application {
                 pushInLog(item.getClass().getSimpleName());
                 map.getPlayer().getCell().setItem(null);
             }
+            refresh();
         });
 
 
@@ -109,9 +118,29 @@ public class    Main extends Application {
 //        uiBottomPane.setStyle("-fx-background-color: BLUE;");
         uiBottomPane.getChildren().add(scrollForLogArea);
 
-
+//
         inventoryButton.setDisable(true);
+        inventoryButton.setOnAction(
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        final Stage dialog = new Stage();
+                        //se the window not to obstruct the main window
+                        dialog.initModality(Modality.NONE);
+                        dialog.initOwner(primaryStage);
+                        VBox dialogBox = new VBox(20);
+                        System.out.println(inventoryToString());
+                        Text inventoryContents = new Text (inventoryToString());
+                        inventoryContents.setLineSpacing(2.5);
+                        dialogBox.getChildren().add(inventoryContents);
+                        Scene dialogScene = new Scene(dialogBox, 300,200);
+                        dialog.setScene(dialogScene);
+                        dialog.show();
+                    }
+                }
+        );
         uiDashboard.add(inventoryButton,0,2);
+
 
 
 
@@ -227,5 +256,15 @@ public class    Main extends Application {
 
 //        pushInLog("Refresh happened!");
         healthLabel.setText("" + map.getPlayer().getHealth());
+    }
+
+    private String inventoryToString() {
+        StringBuilder contents = new StringBuilder("Items:\n");
+        for (Item item: inventory) {
+            contents.append(item.getClass().getSimpleName());
+            contents.append("\n");
+        }
+
+        return contents.toString();
     }
 }

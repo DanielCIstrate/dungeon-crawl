@@ -4,7 +4,8 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
-
+import com.codecool.dungeoncrawl.logic.items.Item;
+import com.codecool.dungeoncrawl.logic.items.Sword;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -32,6 +33,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collector;
 
 
 public class    Main extends Application {
@@ -168,6 +170,8 @@ public class    Main extends Application {
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
             onKeyPressed(keyEvent);
+            if (map.getPlayer().getHealth() <=0)
+                scene.setRoot(isOver());
             keyEvent.consume();
         });
 
@@ -208,9 +212,17 @@ public class    Main extends Application {
         VBox elements = new VBox();
         elements.setPrefSize(1280, 720);
         elements.setAlignment(Pos.CENTER);
-        Text gameOver = new Text("Well Done!\nYou have finished the game!");
-        elements.getChildren().addAll(gameOver);
+        if (map.getPlayer().getHealth() <= 0) {
+            Text gameOver = new Text("You died! Please try again!");
+            elements.getChildren().addAll(gameOver);
+
+        } else {
+            Text gameOver = new Text("Well Done!\nYou have finished the game!");
+            elements.getChildren().addAll(gameOver);
+        }
+
         over_screen.getChildren().add(elements);
+
 
         return over_screen;
 
@@ -263,7 +275,7 @@ public class    Main extends Application {
         if (newLogLength > MAX_LOG_LENGTH) {
             newLogText = logStringBuilder
                     .subSequence(Math.max(0,newLogLength-MAX_LOG_LENGTH), currentLogLength)
-                    .toString() ;
+                    .toString();
             logStringBuilder.setLength(0);
             logStringBuilder.append(newLogText.substring(MAX_LOG_LENGTH/2));
         }
@@ -280,6 +292,10 @@ public class    Main extends Application {
     }
 
     private void refresh() {
+        if (Main.getInventory().stream().map(Item::getTileName).anyMatch("sword"::equals)) {
+            int damage = map.getPlayer().getDamage();
+            map.getPlayer().setDamage(damage+20);
+        }
         pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);
         inventoryButton.setDisable(inventory.isEmpty());
         context.setFill(Color.BLACK);
@@ -298,10 +314,8 @@ public class    Main extends Application {
                 }
             }
         }
-        if (getPickUpButton() != null) {
-            getPickUpButton().setVisible(map.getPlayer().getCell().getItem() != null);
-        }
-        pushInLog("Refresh happened!");
+
+//        pushInLog("Refresh happened!");
         healthLabel.setText("" + map.getPlayer().getHealth());
     }
 

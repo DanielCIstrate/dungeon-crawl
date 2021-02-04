@@ -5,6 +5,8 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -16,10 +18,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class    Main extends Application {
@@ -30,7 +37,7 @@ public class    Main extends Application {
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
     Button pickUp = new Button("Pick Up");
-    List<Item> inventory = new ArrayList<>();
+    List<Item> inventory = new LinkedList<>();
     Button inventoryButton = new Button("Inventory");
 
     public static void main(String[] args) {
@@ -62,13 +69,35 @@ public class    Main extends Application {
                 System.out.println(item.getClass().getSimpleName());
                 map.getPlayer().getCell().setItem(null);
             }
+            refresh();
         });
 
         ui.add(pickUp,0,1);
 
-
+//
         inventoryButton.setDisable(true);
+        inventoryButton.setOnAction(
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        final Stage dialog = new Stage();
+                        //se the window not to obstruct the main window
+                        dialog.initModality(Modality.NONE);
+                        dialog.initOwner(primaryStage);
+                        VBox dialogBox = new VBox(20);
+//                        System.out.println(inventoryContents);
+                        System.out.println(inventoryToString());
+                        Text inventoryContents = new Text (inventoryToString());
+                        inventoryContents.setLineSpacing(2.5);
+                        dialogBox.getChildren().add(inventoryContents);
+                        Scene dialogScene = new Scene(dialogBox, 300,200);
+                        dialog.setScene(dialogScene);
+                        dialog.show();
+                    }
+                }
+        );
         ui.add(inventoryButton,0,2);
+
 
 
         BorderPane borderPane = new BorderPane();
@@ -134,5 +163,15 @@ public class    Main extends Application {
             }
         }
         healthLabel.setText("" + map.getPlayer().getHealth());
+    }
+
+    private String inventoryToString() {
+        StringBuilder contents = new StringBuilder("Items:\n");
+        for (Item item: inventory) {
+            contents.append(item.getClass().getSimpleName());
+            contents.append("\n");
+        }
+
+        return contents.toString();
     }
 }

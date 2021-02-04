@@ -2,13 +2,15 @@ package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.Inventory;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.items.Item;
+import com.codecool.dungeoncrawl.ui.GameLog;
+import com.codecool.dungeoncrawl.ui.Tiles;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.collections.ObservableList;
-
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -29,14 +31,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 
 public class    Main extends Application {
-    public static final Integer MAX_LOG_LENGTH = 1000;
+
     GameMap map = MapLoader.loadMap();
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
@@ -46,14 +45,14 @@ public class    Main extends Application {
 
     GridPane uiDashboard = new GridPane();
 
-    StringBuilder logStringBuilder = new StringBuilder(MAX_LOG_LENGTH / 10);
 
-
-    ScrollPane scrollForLogArea = new ScrollPane();
-    TextArea logArea = new TextArea();
+    GameLog gameLog = GameLog.getGameLog();
+    ScrollPane scrollForLogArea = gameLog.getScrollForText();
+    TextArea logArea = gameLog.getTextArea();
 
     Button pickUp = new Button("Pick Up");
-    List<Item> inventory = new LinkedList<>();
+    Inventory inventoryObject = Inventory.getInventory();
+    List<Item> inventoryList = inventoryObject.getList();
     Button inventoryButton = new Button("Inventory");
 
 
@@ -65,7 +64,7 @@ public class    Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
 
-        pushInLog("Log me... \tRight about now\tThe funk soul brother!");
+        gameLog.pushInLog("Log me... \tRight about now\tThe funk soul brother!");
         uiDashboard.setPrefWidth(200);
         uiDashboard.setPadding(new Insets(10));
         uiDashboard.setVgap(10);
@@ -83,10 +82,10 @@ public class    Main extends Application {
         pickUp.setVisible(false);
         pickUp.managedProperty().bind(pickUp.visibleProperty());
         pickUp.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent ->{
-            inventory.add(map.getPlayer().getCell().getItem());
-            pushInLog("Items: ");
-            for (Item item: inventory) {
-                pushInLog(item.getClass().getSimpleName());
+            inventoryList.add(map.getPlayer().getCell().getItem());
+            gameLog.pushInLog("Items: ");
+            for (Item item: inventoryList) {
+                gameLog.pushInLog(item.getClass().getSimpleName());
                 map.getPlayer().getCell().setItem(null);
             }
             refresh();
@@ -100,21 +99,8 @@ public class    Main extends Application {
 
 
 
-        scrollForLogArea.setMinHeight(80);
-        logArea.setPrefWidth(canvas.getWidth());
-        scrollForLogArea.setContent(logArea);
-//        logArea.textProperty().bind(logTextObject.textProperty());
-//        logTextObject.wrappingWidthProperty().bind(scrollForLogArea.widthProperty());
-
-
-
-
-//        scrollForLog.setStyle("-fx-opacity: 1; "+
-//                "-fx-background-color: GREEN;");
-        logArea.setFocusTraversable(false);
-        logArea.setStyle("-fx-opacity: 1;" /* +
-                "-fx-background-color: RED;" */
-                );
+        logArea.setPrefWidth(canvas.getWidth());    // the size of the child determines the size
+                                                    // the parent (scrollLogArea)
 //        uiBottomPane.setStyle("-fx-background-color: BLUE;");
         uiBottomPane.getChildren().add(scrollForLogArea);
 
@@ -129,8 +115,8 @@ public class    Main extends Application {
                         dialog.initModality(Modality.NONE);
                         dialog.initOwner(primaryStage);
                         VBox dialogBox = new VBox(20);
-                        System.out.println(inventoryToString());
-                        Text inventoryContents = new Text (inventoryToString());
+                        System.out.println(inventoryObject.toString());
+                        Text inventoryContents = new Text (inventoryObject.toString());
                         inventoryContents.setLineSpacing(2.5);
                         dialogBox.getChildren().add(inventoryContents);
                         Scene dialogScene = new Scene(dialogBox, 300,200);
@@ -207,36 +193,11 @@ public class    Main extends Application {
         }
     }
 
-    public void pushInLog(String message)
-    {
-        Integer messageLength = message.length();
-        Integer currentLogLength = logStringBuilder.length();
 
-        logStringBuilder.append("\n" + message);
-        String newLogText;
-        Integer newLogLength = messageLength + currentLogLength;
-        if (newLogLength > MAX_LOG_LENGTH) {
-            newLogText = logStringBuilder
-                    .subSequence(Math.max(0,newLogLength-MAX_LOG_LENGTH), currentLogLength)
-                    .toString();
-            logStringBuilder.setLength(0);
-            logStringBuilder.append(newLogText.substring(MAX_LOG_LENGTH/2));
-        }
-        else {
-            newLogText = logStringBuilder.toString();
-        }
-        logArea.setFocusTraversable(true);
-
-
-        logArea.setText(newLogText);    // can bind this to a Text object
-        logArea.selectPositionCaret(logArea.getLength());
-        logArea.setFocusTraversable(false);
-        logArea.deselect();
-    }
 
     private void refresh() {
         pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);
-        inventoryButton.setDisable(inventory.isEmpty());
+        inventoryButton.setDisable(inventoryList.isEmpty());
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
@@ -254,17 +215,9 @@ public class    Main extends Application {
             }
         }
 
-//        pushInLog("Refresh happened!");
+//        gameLog.pushInLog("Refresh happened!");
         healthLabel.setText("" + map.getPlayer().getHealth());
     }
 
-    private String inventoryToString() {
-        StringBuilder contents = new StringBuilder("Items:\n");
-        for (Item item: inventory) {
-            contents.append(item.getClass().getSimpleName());
-            contents.append("\n");
-        }
 
-        return contents.toString();
-    }
 }

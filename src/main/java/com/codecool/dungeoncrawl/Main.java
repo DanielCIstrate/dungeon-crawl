@@ -131,7 +131,6 @@ public class    Main extends Application {
                         dialog.initModality(Modality.NONE);
                         dialog.initOwner(primaryStage);
                         VBox dialogBox = new VBox(20);
-//                        System.out.println(inventoryContents);
                         System.out.println(inventoryToString());
                         Text inventoryContents = new Text (inventoryToString());
                         inventoryContents.setLineSpacing(2.5);
@@ -143,7 +142,7 @@ public class    Main extends Application {
                 }
         );
         uiDashboard.add(inventoryButton,0,2);
-        uiDashboard.add(inventoryButton,0,2);
+
 
 
 

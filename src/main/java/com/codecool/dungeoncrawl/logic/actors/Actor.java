@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.codecool.dungeoncrawl.ui.GameLog.getGameLog;
+
 public abstract class Actor implements Drawable {
     private Cell cell;
     private static Map<String, Integer> attributeModifierMap = new HashMap<>();
@@ -136,8 +138,8 @@ public abstract class Actor implements Drawable {
     public void killAnother(Actor victim) {
         Cell hostCell = victim.getCell();
         hostCell.setActor(null);
-        System.out.println(victim.getClass().getSimpleName()+" has died!");
-        victim = null;    // sets pointer to 'host' as null, and it will be deleted by the garbage collector
+        getGameLog().pushInLog(victim.getClass().getSimpleName()+" has died!");
+        victim = null;    // sets pointer to 'victim' as null, and it will be deleted by the garbage collector
 
     }
 

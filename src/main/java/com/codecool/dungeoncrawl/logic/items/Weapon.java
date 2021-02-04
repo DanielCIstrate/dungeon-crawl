@@ -17,4 +17,9 @@ public abstract class Weapon extends Item{
     public void setDamage(Integer damage) {
         this.damage = damage;
     }
+
+    public Double getAwesomenessValue() {
+        Double value = Double.valueOf((double) this.damage);
+        return value;
+    }
 }

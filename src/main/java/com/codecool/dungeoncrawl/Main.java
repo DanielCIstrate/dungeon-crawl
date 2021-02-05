@@ -67,7 +67,7 @@ public class    Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
 
-        gameLog.pushInLog("Log me... \tRight about now\tThe funk soul brother!");
+        gameLog.pushInLog("Good luck Angus!");
         uiDashboard.setPrefWidth(200);
         uiDashboard.setPadding(new Insets(10));
         uiDashboard.setVgap(10);

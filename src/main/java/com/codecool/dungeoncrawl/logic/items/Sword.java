@@ -6,7 +6,7 @@ public class Sword extends Weapon{
 
     public Sword(Cell cell) {
         super(cell);
-        this.damage = 2;
+        this.damage = 20;
     }
 
     @Override

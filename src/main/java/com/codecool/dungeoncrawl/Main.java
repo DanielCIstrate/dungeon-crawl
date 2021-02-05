@@ -72,11 +72,6 @@ public class    Main extends Application {
         uiDashboard.setPrefWidth(200);
         uiDashboard.setPadding(new Insets(10));
         uiDashboard.setVgap(10);
-        //set minimum width for first column
-        ColumnConstraints constraintCol1 = new ColumnConstraints();
-        constraintCol1.setMinWidth(70);
-        uiDashboard.getColumnConstraints().addAll(constraintCol1);
-
         uiDashboard.add(new Label("Health: "), 0, 0);
         uiDashboard.add(healthLabel, 2, 0);
 

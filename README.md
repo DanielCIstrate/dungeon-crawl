@@ -1,4 +1,4 @@
-# Dungeon Crawl (sprint 1)
+£ Dungeon Crawl (sprint 1)
 
 ## Story
 

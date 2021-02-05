@@ -17,20 +17,34 @@ public class Player extends Actor {
     public void onEncounterAsGuest(Actor host) {
         super.onEncounterAsGuest(host);
         if (host instanceof Enemy) {
-            Weapon equippedWeapon = Inventory.getInventory().getBestWeaponInInventory();
-            Integer damageFromWeapon = 0;
-            if (equippedWeapon != null) {
-                damageFromWeapon = equippedWeapon.getDamage();
-            }
-            Integer dealtDamage = this.getDamage()+damageFromWeapon;
-            host.setHealth( host.getHealth()-dealtDamage );
-            getGameLog().pushInLog("You hit the " + host.getClass().getSimpleName() +
-                    " for " + dealtDamage + " damage.");
-            if (host.getHealth() <= 0) {
-                this.killAnother(host);
-            }
+            doCombat(host);
         }
     }
+
+    @Override
+    public void onEncounterAsHost(Actor guest) {
+        super.onEncounterAsHost(guest);
+        if (guest instanceof Enemy) {
+            doCombat(guest);
+        }
+    }
+
+    private void doCombat(Actor opponent) {
+
+        Weapon equippedWeapon = Inventory.getInventory().getBestWeaponInInventory();
+        Integer damageFromWeapon = 0;
+        if (equippedWeapon != null) {
+            damageFromWeapon = equippedWeapon.getDamage();
+        }
+        Integer dealtDamage = this.getDamage()+damageFromWeapon;
+        opponent.setHealth( opponent.getHealth()-dealtDamage );
+        getGameLog().pushInLog("You hit the " + opponent.getClass().getSimpleName() +
+                " for " + dealtDamage + " damage.");
+        if (opponent.getHealth() <= 0) {
+            this.killAnother(opponent);
+        }
+    }
+
 
     public String getTileName() {
         return "player";

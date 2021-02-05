@@ -2,6 +2,8 @@ package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.Player;
 
+import java.lang.reflect.Array;
+
 public class GameMap {
     private int width;
     private int height;
@@ -21,7 +23,22 @@ public class GameMap {
     }
 
     public Cell getCell(int x, int y) {
-        return cells[x][y];
+        if (areBoundedIndices(x, y)) {
+            return cells[x][y];
+        }
+        else {
+            return null;
+        }
+    }
+
+    public boolean areBoundedIndices(int someX, int someY) {
+        boolean assumption = false;
+        if ((someX >= 0) && (someX < cells.length)) {
+            if ((someY >= 0) && (someY < cells[someX].length)) {
+                assumption = true;
+            }
+        }
+        return assumption;
     }
 
     public void setPlayer(Player player) {
@@ -38,5 +55,12 @@ public class GameMap {
 
     public int getHeight() {
         return height;
+    }
+
+    public Cell getRandomNeighborCell(int x, int y) {
+//        char[] directions = new Array<Character>;
+//                {'E', 'N', 'W', 'S'};
+//        for
+        return null;
     }
 }

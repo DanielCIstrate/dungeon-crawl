@@ -53,4 +53,6 @@ public class Cell implements Drawable {
     public int getY() {
         return y;
     }
+
+    public Cell getRandomNeighbor() { return gameMap.getRandomNeighborCell(x, y);}
 }

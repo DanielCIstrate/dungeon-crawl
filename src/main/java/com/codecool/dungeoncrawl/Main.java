@@ -1,18 +1,18 @@
 package com.codecool.dungeoncrawl;
 
-import com.codecool.dungeoncrawl.logic.Cell;
-import com.codecool.dungeoncrawl.logic.GameMap;
-import com.codecool.dungeoncrawl.logic.Inventory;
-import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.ui.GameLog;
 import com.codecool.dungeoncrawl.ui.Tiles;
+
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,21 +22,23 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.LinkedList;
 import java.util.List;
+
+
 
 
 public class    Main extends Application {
 
-    GameMap map = MapLoader.loadMap();
+    GameMap map = MapLoader.loadMap("/map.txt");
+    GameMap mapOfLevel2 = MapLoader.loadMap("/map2.txt");
+
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -51,6 +53,7 @@ public class    Main extends Application {
     TextArea logArea = gameLog.getTextArea();
 
     Button pickUp = new Button("Pick Up");
+
     Inventory inventoryObject = Inventory.getInventory();
     List<Item> inventoryList = inventoryObject.getList();
     Button inventoryButton = new Button("Inventory");
@@ -114,6 +117,7 @@ public class    Main extends Application {
                         //se the window not to obstruct the main window
                         dialog.initModality(Modality.NONE);
                         dialog.initOwner(primaryStage);
+                        dialog.setTitle("Inventory");
                         VBox dialogBox = new VBox(20);
                         System.out.println(inventoryObject.toString());
                         Text inventoryContents = new Text (inventoryObject.toString());
@@ -122,11 +126,17 @@ public class    Main extends Application {
                         Scene dialogScene = new Scene(dialogBox, 300,200);
                         dialog.setScene(dialogScene);
                         dialog.show();
+                        actionEvent.consume();
                     }
                 }
         );
         uiDashboard.add(inventoryButton,0,2);
 
+//
+//        unlockButton.setDisable(true);
+//        unlockButton.setVisible(false);
+//        unlockButton.managedProperty().bind(unlockButton.visibleProperty());
+//
 
 
 
@@ -143,10 +153,32 @@ public class    Main extends Application {
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
             onKeyPressed(keyEvent);
+            if (map.getPlayer().getHealth() <=0)
+                scene.setRoot(isOver());
             keyEvent.consume();
         });
 
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
+                map = mapOfLevel2;
+                refresh();
+                keyEvent.consume();
+                }
+        });
 
+
+
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if(map.getPlayer().getCell().getType().equals(CellType.GATE_FINAL)) {
+                System.out.println("Final");
+                Parent over = isOver();
+                scene.setRoot(over);
+                refresh();
+                keyEvent.consume();
+
+
+            }
+        });
 
 
 
@@ -157,13 +189,35 @@ public class    Main extends Application {
 
 // Example of getting elements from parent Panes, Scene, etc (in this case uiDashboard)
 
+    public Parent isOver(){
+        Pane over_screen = new Pane();
+
+        VBox elements = new VBox();
+        elements.setPrefSize(1280, 720);
+        elements.setAlignment(Pos.CENTER);
+        if (map.getPlayer().getHealth() <= 0) {
+            Text gameOver = new Text("You died! Please try again!");
+            elements.getChildren().addAll(gameOver);
+
+        } else {
+            Text gameOver = new Text("Well Done!\nYou have finished the game!");
+            elements.getChildren().addAll(gameOver);
+        }
+
+        over_screen.getChildren().add(elements);
+
+
+        return over_screen;
+
+    }
+
     private Button getPickUpButton() {
         ObservableList<Node> nodeElementsList;
         nodeElementsList = uiDashboard.getChildren();
         for (Node element : nodeElementsList ) {
             if (element instanceof Button) {
                 Button elementAsButton = (Button) element;
-                if (elementAsButton.getText() == "Pick Up") {
+                if (elementAsButton.getText().equals("Pick Up")) {
                     return elementAsButton;
                 }
             }
@@ -196,6 +250,7 @@ public class    Main extends Application {
 
 
     private void refresh() {
+
         pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);
         inventoryButton.setDisable(inventoryList.isEmpty());
         context.setFill(Color.BLACK);
@@ -218,6 +273,7 @@ public class    Main extends Application {
 //        gameLog.pushInLog("Refresh happened!");
         healthLabel.setText("" + map.getPlayer().getHealth());
     }
+
 
 
 }

@@ -1,7 +1,10 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
+import com.codecool.dungeoncrawl.Main;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.Inventory;
+import com.codecool.dungeoncrawl.logic.items.Item;
+import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Weapon;
 
 
@@ -45,6 +48,15 @@ public class Player extends Actor {
         }
     }
 
+    public boolean hasKeyInInventory() {
+        Class<?> keyClass = null;
+        try {
+             keyClass = Class.forName("com.codecool.dungeoncrawl.logic.items.Key");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();            
+        }
+        return Inventory.getInventory().isInInventoryItemOfType(keyClass);
+    }
 
     public String getTileName() {
         return "player";

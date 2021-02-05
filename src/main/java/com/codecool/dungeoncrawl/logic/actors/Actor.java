@@ -1,8 +1,13 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
+import com.codecool.dungeoncrawl.Main;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Drawable;
+import com.codecool.dungeoncrawl.logic.items.Item;
+import com.codecool.dungeoncrawl.logic.items.Key;
+
+import java.util.stream.Stream;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -112,8 +117,26 @@ public abstract class Actor implements Drawable {
         return cell.getY();
     }
 
+
+
     public boolean canMove(Cell targetCell) {
-        if (targetCell.getType().equals(CellType.WALL)) {return false;}
+        CellType targetCellType = targetCell.getType();
+        if (targetCellType.equals(CellType.WALL) ||
+                targetCellType.equals(CellType.WALL2) ||
+                targetCellType.equals(CellType.STATUE1) ||
+                targetCellType.equals(CellType.STATUE2) ||
+                targetCellType.equals(CellType.LAKE)) {
+            return false;
+        }
+        if (targetCell.getType().equals(CellType.CLOSED_DOOR)) {
+            if (this instanceof Player) {
+                Player thisAsPlayer = (Player) this;
+                if (thisAsPlayer.hasKeyInInventory()) {
+                    targetCell.setType(CellType.OPEN_DOOR);
+                }
+            }
+            return false;
+        }
 
 
         if (targetCell.getActor() == null) {

@@ -16,7 +16,7 @@ public class Sword extends Weapon{
 
 
     public void modifyDurabilityBy(Integer amount ) {
-        setDurabilty(super.getDurability() + amount);
+        setDurability(super.getDurability() + amount);
     }
 
 }

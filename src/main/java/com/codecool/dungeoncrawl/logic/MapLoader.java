@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.actors.Skeleton;
+import com.codecool.dungeoncrawl.logic.decoration.Decoration;
 import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Sword;
 
@@ -9,8 +10,8 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 public class MapLoader {
-    public static GameMap loadMap() {
-        InputStream is = MapLoader.class.getResourceAsStream("/map.txt");
+    public static GameMap loadMap(String fileName) {
+        InputStream is = MapLoader.class.getResourceAsStream(fileName);
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();
         int height = scanner.nextInt();
@@ -48,6 +49,34 @@ public class MapLoader {
                         case 'k':
                             cell.setType(CellType.FLOOR);
                             new Key(cell);
+                            break;
+                        case 'c':
+                            cell.setType(CellType.CLOSED_DOOR);
+                            break;
+                        case 'g':
+                            cell.setType(CellType.GATE);
+                            break;
+                        case '~':
+                            cell.setType(CellType.LAKE);
+                            new Decoration(cell, "waterLake");
+                            break;
+                        case 'a':
+                            cell.setType(CellType.STATUE1);
+                            new Decoration(cell,"candleStatue");
+                            break;
+                        case 'w':
+                            cell.setType(CellType.STATUE2);
+                            new Decoration(cell,"campFire");
+                            break;
+                        case '^':
+                            cell.setType(CellType.WALL2);
+                            new Decoration(cell, "treeWall");
+                            break;
+                        case ',':
+                            cell.setType(CellType.FLOOR2);
+                            break;
+                        case 'f':
+                            cell.setType(CellType.GATE_FINAL);
                             break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");

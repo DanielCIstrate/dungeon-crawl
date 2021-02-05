@@ -28,7 +28,7 @@ public abstract class Item implements Drawable {
         return this.durability;
     };
 
-    public void setDurabilty(Integer durability) {
+    public void setDurability(Integer durability) {
         this.durability = durability;
     }
 

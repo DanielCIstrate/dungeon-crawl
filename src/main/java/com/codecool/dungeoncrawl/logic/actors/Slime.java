@@ -10,15 +10,16 @@ public class Slime extends Enemy {
     }
 
     public void move() {
-//        Cell nextCell = this.getCell().getRandomNeighbor();
-        // Will do combat, but it will also not move after attempting
-        // to enter an occupied square (will move slower than once every 'speed' seconds)
-//        if (canMove(nextCell)) {
-//            this.getCell().setActor(null);
-//            nextCell.setActor(this);
-//            this.setCell(nextCell);
+        Cell nextCell = this.getCell().getRandomNeighbor();
 
-//        }
+//         Will do combat, but it will also not move after attempting
+//         to enter an occupied square (will move slower than once every 'speed' seconds)
+        if (canMove(nextCell)) {
+            this.getCell().setActor(null);
+            nextCell.setActor(this);
+            this.setCell(nextCell);
+
+        }
 
     }
 

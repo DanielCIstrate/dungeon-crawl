@@ -44,6 +44,7 @@ public class    Main extends Application {
             map.getHeight() * Tiles.TILE_WIDTH);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
+    Label damageLabel = new Label();
 
     GridPane uiDashboard = new GridPane();
 
@@ -79,6 +80,10 @@ public class    Main extends Application {
         uiDashboard.add(new Label("Health: "), 0, 0);
         uiDashboard.add(healthLabel, 2, 0);
 
+        uiDashboard.add(new Label("Damage: "), 0, 1);
+        uiDashboard.add(damageLabel, 2, 1);
+
+
 
 
 
@@ -95,7 +100,7 @@ public class    Main extends Application {
         });
 
 
-        this.uiDashboard.add(pickUp,0,1);
+        this.uiDashboard.add(pickUp,0,2);
 
 
         GridPane uiBottomPane = new GridPane();
@@ -130,7 +135,7 @@ public class    Main extends Application {
                     }
                 }
         );
-        uiDashboard.add(inventoryButton,0,2);
+        uiDashboard.add(inventoryButton,0,3);
 
 //
 //        unlockButton.setDisable(true);
@@ -272,6 +277,7 @@ public class    Main extends Application {
 
 //        gameLog.pushInLog("Refresh happened!");
         healthLabel.setText("" + map.getPlayer().getHealth());
+        damageLabel.setText("" + map.getPlayer().getCalculatedDamageString());
     }
 
 

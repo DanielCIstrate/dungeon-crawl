@@ -58,9 +58,21 @@ public class Player extends Actor {
         return Inventory.getInventory().isInInventoryItemOfType(keyClass);
     }
 
+
     public String getTileName() {
         return "player";
     }
 
 
+    public String getCalculatedDamageString() {
+        Weapon equippedWeapon = Inventory.getInventory().getBestWeaponInInventory();
+        int damageFromWeapon = 0;
+        if (equippedWeapon != null) {
+            damageFromWeapon = equippedWeapon.getDamage();
+        }
+        int dealtDamage = this.getDamage()+damageFromWeapon;
+        String result;
+        result = "" + this.getDamage() + "+" + damageFromWeapon + " = " + dealtDamage;
+        return result;
+    }
 }

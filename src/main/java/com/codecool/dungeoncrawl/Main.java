@@ -70,7 +70,7 @@ public class    Main extends Application {
 
         gameLog.pushInLog("Good luck Angus!");
         uiDashboard.setPrefWidth(200);
-        uiDashboard.setPadding(new Insets(10));
+        uiDashboard.setPadding(new Insets(2));
         uiDashboard.setVgap(10);
         uiDashboard.add(new Label("Health: "), 0, 0);
         uiDashboard.add(healthLabel, 2, 0);

@@ -75,8 +75,12 @@ public class    Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         setupDbManager();
 
+        //TODO - add a UI element to set name
+        Player player = map.getPlayer();
+        player.setName("Zorro");
 
-        gameLog.pushInLog("Good luck Angus!");
+
+        gameLog.pushInLog("Good luck " + player.getName());
         uiDashboard.setPrefWidth(200);
         uiDashboard.setPadding(new Insets(2));
         uiDashboard.setVgap(10);

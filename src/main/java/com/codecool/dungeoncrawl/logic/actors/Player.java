@@ -11,9 +11,26 @@ import com.codecool.dungeoncrawl.logic.items.Weapon;
 import static com.codecool.dungeoncrawl.ui.GameLog.getGameLog;
 
 public class Player extends Actor {
-    public Player(Cell cell) {
+    public String name;
+
+    public Player(String newName, Cell cell) {
         super(cell);
         this.setDamage(5);
+        this.name = newName;
+    }
+
+    public Player(Cell cell){
+        super(cell);
+        this.setDamage(5);
+        this.name = "Angus";
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String newName) {
+        this.name = newName;
     }
 
     @Override

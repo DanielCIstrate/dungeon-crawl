@@ -18,12 +18,14 @@ import static com.codecool.dungeoncrawl.ui.GameLog.getGameLog;
 public abstract class Actor implements Drawable {
     private Cell cell;
     private static Map<String, Integer> attributeModifierMap = new HashMap<>();
-    private int health = 10;
-    private int damage = 0;
+    private int health;
+    private int damage;
 
     public Actor(Cell cell) {
         this.cell = cell;
         this.cell.setActor(this);
+        health = 10;
+        damage = 0;
     }
 
     public void move(int dx, int dy) {

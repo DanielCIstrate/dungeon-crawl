@@ -40,6 +40,7 @@ public class Tiles {
         tileMap.put("campFire", new Tile(14,10));
         tileMap.put("footpath",new Tile(1,0));
         tileMap.put("finalPortal",new Tile(1,9));
+        tileMap.put("zombie", new Tile(26, 2));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {

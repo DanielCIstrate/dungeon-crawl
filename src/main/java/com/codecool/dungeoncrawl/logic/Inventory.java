@@ -2,10 +2,11 @@ package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.items.*;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class Inventory {
+public final class Inventory implements Serializable {
     private List<Item> list;
     private static Inventory inventorySingleton;
 

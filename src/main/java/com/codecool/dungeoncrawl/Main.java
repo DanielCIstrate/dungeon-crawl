@@ -6,6 +6,7 @@ import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.ui.GameLog;
 import com.codecool.dungeoncrawl.ui.Tiles;
+import com.codecool.dungeoncrawl.logic.MapExportImport;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -29,20 +30,25 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.sql.SQLException;
-
 import java.util.LinkedList;
 import java.util.List;
 
+import com.codecool.dungeoncrawl.logic.Test.*;
 
 
 
 
 
-public class    Main extends Application {
+public class Main extends Application {
 
-    GameMap map = MapLoader.loadMap("/map.txt");
+    GameMap mapOfLevel1 = MapLoader.loadMap("/map.txt");
     GameMap mapOfLevel2 = MapLoader.loadMap("/map2.txt");
+    GameMap map = mapOfLevel1;
+
+
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -74,6 +80,7 @@ public class    Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         setupDbManager();
+
 
 
         gameLog.pushInLog("Good luck Angus!");
@@ -169,11 +176,28 @@ public class    Main extends Application {
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
             if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
-                map = mapOfLevel2;
-                refresh();
-                keyEvent.consume();
+                try {
+                    MapExportImport.writeMapState(map,"src/main/resources/exports/mapExport.json");
+                    map = mapOfLevel2;
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-        });
+
+                }
+            if (map.getPlayer().getCell().getType().equals(CellType.GATE_UP)) {
+                try {
+                    map = MapExportImport.readMapState("src/main/resources/exports/mapExport.json");
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }}
+            keyEvent.consume();
+            refresh();
+
+
+
+            });
+
+
 
 
 
@@ -277,21 +301,20 @@ public class    Main extends Application {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
+                } else if (cell.getItem() != null) {
+                    Tiles.drawTile(context, cell.getItem(), x, y);
                 } else {
-                    if (cell.getItem() != null) {
-                        Tiles.drawTile(context, cell.getItem(), x, y);
-                    } else {
-                        Tiles.drawTile(context, cell, x, y);
-                    }
+                    Tiles.drawTile(context, cell, x, y);
                 }
             }
         }
 
+
 //        gameLog.pushInLog("Refresh happened!");
         healthLabel.setText("" + map.getPlayer().getHealth());
         damageLabel.setText("" + map.getPlayer().getCalculatedDamageString());
-    }
 
+    }
 
     private void setupDbManager() {
         dbManager = new GameDatabaseManager();

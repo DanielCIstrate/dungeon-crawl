@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.logic.Drawable;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.items.Key;
 
+import java.io.Serializable;
 import java.util.stream.Stream;
 
 import java.lang.reflect.Field;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 import static com.codecool.dungeoncrawl.ui.GameLog.getGameLog;
 
-public abstract class Actor implements Drawable {
+public abstract class Actor implements Drawable, Serializable {
     private Cell cell;
     private static Map<String, Integer> attributeModifierMap = new HashMap<>();
     private int health = 10;

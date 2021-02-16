@@ -41,6 +41,8 @@ public class Tiles {
         tileMap.put("footpath",new Tile(1,0));
         tileMap.put("finalPortal",new Tile(1,9));
         tileMap.put("zombie", new Tile(26, 2));
+        tileMap.put("ghost", new Tile(27, 6));
+        tileMap.put("boss", new Tile(31, 6));
     }
 
     public static void drawTile(GraphicsContext context, Drawable d, int x, int y) {

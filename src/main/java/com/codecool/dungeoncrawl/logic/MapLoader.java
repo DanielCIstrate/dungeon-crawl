@@ -1,8 +1,6 @@
 package com.codecool.dungeoncrawl.logic;
 
-import com.codecool.dungeoncrawl.logic.actors.Player;
-import com.codecool.dungeoncrawl.logic.actors.Skeleton;
-import com.codecool.dungeoncrawl.logic.actors.Zombie;
+import com.codecool.dungeoncrawl.logic.actors.*;
 import com.codecool.dungeoncrawl.logic.decoration.Decoration;
 import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Sword;
@@ -83,6 +81,14 @@ public class MapLoader {
                         case 'z':
                             cell.setType(CellType.FLOOR);
                             new Zombie(cell);
+                            break;
+                        case 'G':
+                            cell.setType(CellType.FLOOR2);
+                            new Ghost(cell);
+                            break;
+                        case 'B':
+                            cell.setType(CellType.FLOOR2);
+                            new Boss(cell);
                             break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");

@@ -33,6 +33,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,10 +44,12 @@ import com.codecool.dungeoncrawl.logic.Test.*;
 
 
 public class Main extends Application {
-
+    List<GameMap> levels = new LinkedList<>();
     GameMap mapOfLevel1 = MapLoader.loadMap("/map.txt");
     GameMap mapOfLevel2 = MapLoader.loadMap("/map2.txt");
     GameMap map = mapOfLevel1;
+
+
 
 
     Canvas canvas = new Canvas(
@@ -82,7 +85,10 @@ public class Main extends Application {
         setupDbManager();
 
 
-
+        levels.add(mapOfLevel1);
+        levels.add(mapOfLevel2);
+        map = levels.get(0);
+        refresh();
         gameLog.pushInLog("Good luck Angus!");
         uiDashboard.setPrefWidth(200);
         uiDashboard.setPadding(new Insets(2));
@@ -174,24 +180,27 @@ public class Main extends Application {
             keyEvent.consume();
         });
 
+        MapExportImport.writeMapState(mapOfLevel2,"src/main/resources/tmp/mapExportNext.json");
+
         scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
             if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
-                try {
-                    MapExportImport.writeMapState(map,"src/main/resources/exports/mapExport.json");
-                    map = mapOfLevel2;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                      levels.set(0,map);
+                      map = levels.get(1);
 
-                }
+            }
             if (map.getPlayer().getCell().getType().equals(CellType.GATE_UP)) {
-                try {
-                    map = MapExportImport.readMapState("src/main/resources/exports/mapExport.json");
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }}
+//                try {
+//                    MapExportImport.writeMapState(map,"src/main/mai/resources/tmp/mapExportNext.json");
+//                    map = MapExportImport.readMapState("src/main/resources/tmp/mapExportPrevious.json");
+//                } catch (IOException | ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+                levels.set(1,map);
+                map = levels.get(0);
+            }
             keyEvent.consume();
             refresh();
+
 
 
 

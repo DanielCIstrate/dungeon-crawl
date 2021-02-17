@@ -3,6 +3,7 @@ package com.codecool.dungeoncrawl.logic.actors;
 import com.codecool.dungeoncrawl.Main;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
+import com.codecool.dungeoncrawl.logic.Common;
 import com.codecool.dungeoncrawl.logic.Drawable;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.items.Key;
@@ -172,6 +173,28 @@ public abstract class Actor implements Drawable {
         getGameLog().pushInLog(victim.getClass().getSimpleName()+" has died!");
         victim = null;    // sets pointer to 'victim' as null, and it will be deleted by the garbage collector
 
+    }
+
+    public void doMoveLogic() {
+        if (this instanceof Enemy) {
+            Enemy thisActorAsEnemy = (Enemy) this;
+            if (thisActorAsEnemy.getSpeed() > 0.0) {
+                double approxMovesToMake = 2*thisActorAsEnemy.getSpeed();
+                if (approxMovesToMake > 0.5) {
+                    int movesToMake = (int) Math.round(approxMovesToMake);
+                    for (int i = 0; i < movesToMake; i++) {
+                        thisActorAsEnemy.move();
+                    }
+                } else {
+                    int periodOfMovement = (int) Math.floor(1.0 / approxMovesToMake);
+//                    assert (periodOfMovement >= 2);
+                    if (Common.turnCounter % periodOfMovement == 0) {
+                        thisActorAsEnemy.move();
+                    }
+                }
+
+            }
+        }
     }
 
 

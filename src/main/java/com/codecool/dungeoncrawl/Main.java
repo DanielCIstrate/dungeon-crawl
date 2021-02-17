@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.*;
+import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.ui.GameLog;
@@ -65,6 +66,7 @@ public class    Main extends Application {
     Inventory inventoryObject = Inventory.getInventory();
     List<Item> inventoryList = inventoryObject.getList();
     Button inventoryButton = new Button("Inventory");
+    List<Actor> actorsOnMap;
 
 
     public static void main(String[] args) {
@@ -247,18 +249,22 @@ public class    Main extends Application {
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
+                Common.turnCounter++;
                 map.getPlayer().move(0, -1);
                 refresh();
                 break;
             case DOWN:
+                Common.turnCounter++;
                 map.getPlayer().move(0, 1);
                 refresh();
                 break;
             case LEFT:
+                Common.turnCounter++;
                 map.getPlayer().move(-1, 0);
                 refresh();
                 break;
             case RIGHT:
+                Common.turnCounter++;
                 map.getPlayer().move(1, 0);
                 refresh();
                 break;
@@ -270,8 +276,12 @@ public class    Main extends Application {
     }
 
 
-    private void refresh() {
 
+    private void refresh() {
+        actorsOnMap = map.getActorList();
+        for (Actor someActor : actorsOnMap) {
+            someActor.doMoveLogic();
+        }
         pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);
         inventoryButton.setDisable(inventoryList.isEmpty());
         context.setFill(Color.BLACK);

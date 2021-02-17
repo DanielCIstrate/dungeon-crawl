@@ -6,9 +6,10 @@ public class Slime extends Enemy {
     public Slime(Cell cell) {
         super(cell);
         this.setDamage(3);
-        this.setSpeed(1.0);
+        this.setSpeed(0.5);
     }
 
+    @Override
     public void move() {
         Cell nextCell = this.getCell().getRandomNeighbor();
 

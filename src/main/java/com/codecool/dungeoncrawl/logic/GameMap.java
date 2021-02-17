@@ -1,11 +1,9 @@
 package com.codecool.dungeoncrawl.logic;
 
+import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GameMap {
     private int width;
@@ -13,6 +11,8 @@ public class GameMap {
     private Cell[][] cells;
 
     private Player player;
+
+    private List<Actor> actorList;
 
     public GameMap(int width, int height, CellType defaultCellType) {
         this.width = width;
@@ -97,5 +97,17 @@ public class GameMap {
         } else {
             throw new NullPointerException("Could not get random neighbor list!");
         }
+    }
+
+    public List<Actor> getActorList() {
+        return actorList;
+    }
+
+    public void setActorList(List<Actor> newActorList) {
+        this.actorList = newActorList;
+    }
+
+    public void removeNullsInActorList() {
+        actorList.removeIf(Objects::isNull);
     }
 }

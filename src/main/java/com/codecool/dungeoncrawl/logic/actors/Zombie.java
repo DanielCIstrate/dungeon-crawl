@@ -6,7 +6,7 @@ public class Zombie extends Enemy{
 
     public Zombie(Cell cell) {
         super(cell);
-        this.setSpeed(0.5);
+        this.setSpeed(0.25);
         this.setDamage(5);
         this.setHealth(11);
 

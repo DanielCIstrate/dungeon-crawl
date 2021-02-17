@@ -168,6 +168,7 @@ public abstract class Actor implements Drawable {
     public void killAnother(Actor victim) {
         Cell hostCell = victim.getCell();
         hostCell.setActor(null);
+        hostCell.getGameMap().removeNullsInActorList();
         getGameLog().pushInLog(victim.getClass().getSimpleName()+" has died!");
         victim = null;    // sets pointer to 'victim' as null, and it will be deleted by the garbage collector
 

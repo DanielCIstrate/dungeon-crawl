@@ -2,7 +2,9 @@ package com.codecool.dungeoncrawl.logic.items;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 
-public class Sword extends Weapon{
+import java.io.Serializable;
+
+public class Sword extends Weapon implements Serializable {
 
     public Sword(Cell cell) {
         super(cell);

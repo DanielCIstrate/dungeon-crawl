@@ -4,10 +4,15 @@ import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
 
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class GameMap {
+public class GameMap implements Serializable {
     private int width;
     private int height;
     private Cell[][] cells;
@@ -36,6 +41,10 @@ public class GameMap {
             return null;
         }
     }
+
+
+
+
 
     public boolean areBoundedIndices(int someX, int someY) {
         boolean assumption = false;

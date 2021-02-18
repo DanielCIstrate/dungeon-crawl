@@ -111,6 +111,7 @@ public class MapLoader implements Serializable {
                             break;
                         case 'G':
                             cell.setType(CellType.GATE_UP);
+                            map.setPlayer(new Player(cell));
                             break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");

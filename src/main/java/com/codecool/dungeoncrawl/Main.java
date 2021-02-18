@@ -6,7 +6,6 @@ import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
-import com.codecool.dungeoncrawl.model.ActorModel;
 import com.codecool.dungeoncrawl.ui.GameLog;
 import com.codecool.dungeoncrawl.ui.Tiles;
 import com.codecool.dungeoncrawl.logic.MapExportImport;
@@ -34,19 +33,11 @@ import javafx.stage.Stage;
 
 import java.security.InvalidKeyException;
 import java.io.File;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import com.codecool.dungeoncrawl.logic.Test.*;
-import javafx.stage.Window;
-
-import javax.xml.stream.EventFilter;
 
 
 public class Main extends Application {
@@ -221,7 +212,7 @@ public class Main extends Application {
                                 }
                                 String filename = buildString.toString();
                                 System.out.println(Arrays.toString(filename.split("\\.")));
-                                MapExportImport.writeMapState(map,"src/main/resources/exports/" + filename + ".json" );
+                                MapExportImport.writeState(map,Inventory.getInventory(),Common.filePath + filename + ".json" );
                                 gameLog.pushInLog("Game has been exported as " + filename);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -259,7 +250,10 @@ public class Main extends Application {
                                                  String[] filenameSplit = filename.split("\\.");
                                                  String extension = filenameSplit[filenameSplit.length-1];
                                                  if (extension.equals("json")) {
-                                                     map = MapExportImport.readMapState("src/main/resources/exports/" + filename);
+                                                     String path = "src/main/resources/exports/";
+                                                     map = MapExportImport.readExport(path + filename).getExportedMapState();
+                                                     inventoryList.clear();
+                                                     inventoryList.addAll(MapExportImport.readExport(path + filename).getExportedInventory().getList());
                                                      gameLog.pushInLog("File " + filename + " has been imported");
                                                      System.out.println("import successful");
                                                      refresh();
@@ -304,13 +298,11 @@ public class Main extends Application {
                 scene.setRoot(isOver());
             }
             if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
-                levels.set(0,map);
-                map = levels.get(1);
-                if (map.getPlayer().getCell().getType().equals(CellType.FLOOR))
-                    map.getPlayer().getCell().setType(CellType.FLOOR2);
+                map = fromLevelAtoLevelB(levels,map,Common.level,Common.level + 1);
+                Common.level++;
             } else if (map.getPlayer().getCell().getType().equals(CellType.GATE_UP)) {
-                levels.set(1,map);
-                map = levels.get(0);
+                map = fromLevelAtoLevelB(levels,map,Common.level,Common.level - 1);
+                Common.level--;
             }
             if(map.getPlayer().getCell().getType().equals(CellType.GATE_FINAL)) {
                 System.out.println("Final");
@@ -334,6 +326,14 @@ public class Main extends Application {
                 || keyEvent.getCode() == KeyCode.ESCAPE) {
             exit();
         }
+    }
+
+    public GameMap fromLevelAtoLevelB(List<GameMap> levels ,GameMap currentMap, int a, int b) {
+        GameMap newMap;
+        levels.set(a,currentMap);
+        newMap = levels.get(b);
+        levels.get(a).getPlayer().copyAttributesTo(newMap.getPlayer());
+        return newMap;
     }
 
 // Example of getting elements from parent Panes, Scene, etc (in this case uiDashboard)

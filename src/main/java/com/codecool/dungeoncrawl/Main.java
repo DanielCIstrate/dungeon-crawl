@@ -292,54 +292,26 @@ public class Main extends Application {
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
             onKeyPressed(keyEvent);
-            if (map.getPlayer().getHealth() <=0)
+            if (map.getPlayer().getHealth() <=0) {
                 scene.setRoot(isOver());
-//            keyEvent.consume();
+            }
             if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
                 levels.set(0,map);
                 map = levels.get(1);
-            }
-            if (map.getPlayer().getCell().getType().equals(CellType.GATE_UP)) {
+            } else if (map.getPlayer().getCell().getType().equals(CellType.GATE_UP)) {
                 levels.set(1,map);
                 map = levels.get(0);
             }
-            refresh();
-        });
-
-//        MapExportImport.writeMapState(mapOfLevel2,"src/main/resources/tmp/mapExportNext.json");
-
-
-//
-//        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
-//            if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
-//                levels.set(0,map);
-//                map = levels.get(1);
-//            }
-//            if (map.getPlayer().getCell().getType().equals(CellType.GATE_UP)) {
-//                levels.set(1,map);
-//                map = levels.get(0);
-//            }
-//            refresh();
-//
-//
-//
-//        });
-
-
-
-
-
-        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
             if(map.getPlayer().getCell().getType().equals(CellType.GATE_FINAL)) {
                 System.out.println("Final");
                 Parent over = isOver();
                 scene.setRoot(over);
-                refresh();
                 keyEvent.consume();
-
-
             }
+            refresh();
         });
+
+
                 primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
     }

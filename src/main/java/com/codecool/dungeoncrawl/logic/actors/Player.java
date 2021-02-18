@@ -11,6 +11,7 @@ import com.codecool.dungeoncrawl.logic.items.Weapon;
 import static com.codecool.dungeoncrawl.ui.GameLog.getGameLog;
 
 public class Player extends Actor {
+    Inventory inventory;
     public Player(Cell cell) {
         super(cell);
         this.setDamage(5);

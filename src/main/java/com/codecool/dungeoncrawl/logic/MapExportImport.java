@@ -14,6 +14,7 @@ public class MapExportImport implements Serializable {
             ObjectOutputStream mapState = new ObjectOutputStream(exportStream);
 //            mapState.defaultWriteObject();
             mapState.writeObject(map);
+            mapState.writeObject(Inventory.getInventory());
             mapState.flush();
             mapState.close();
         } catch (FileNotFoundException e) {
@@ -25,12 +26,14 @@ public class MapExportImport implements Serializable {
     }
 
 
-    public static GameMap readMapState(String filename) throws ClassNotFoundException, IOException {
-        FileInputStream mapState = new FileInputStream(filename);
-        ObjectInputStream map = new ObjectInputStream(mapState);
+//    public static GameMap readMapState(String filename) throws ClassNotFoundException, IOException {
+//        FileInputStream mapState = new FileInputStream(filename);
+//        ObjectInputStream ObjectStream = new ObjectInputStream(mapState);
+//
+//        return (GameMap) map.readObject();
+//    }
+    // Trebuie o noua clasa wrapperObject care sa aiba ca atribute obiectele pe care le import.
 
-        return (GameMap) map.readObject();
-    }
 
 }
 

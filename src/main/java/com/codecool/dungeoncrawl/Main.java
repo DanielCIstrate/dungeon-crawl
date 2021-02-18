@@ -298,6 +298,8 @@ public class Main extends Application {
             if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
                 levels.set(0,map);
                 map = levels.get(1);
+                if (map.getPlayer().getCell().getType().equals(CellType.FLOOR))
+                    map.getPlayer().getCell().setType(CellType.FLOOR2);
             } else if (map.getPlayer().getCell().getType().equals(CellType.GATE_UP)) {
                 levels.set(1,map);
                 map = levels.get(0);

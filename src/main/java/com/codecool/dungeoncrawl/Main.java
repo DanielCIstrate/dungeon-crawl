@@ -287,21 +287,14 @@ public class Main extends Application {
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
-        scene.setOnKeyReleased(this::onKeyReleased);
+//        scene.setOnKeyPressed(this::onKeyPressed);
+//        scene.setOnKeyReleased(this::onKeyReleased);
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
             onKeyPressed(keyEvent);
             if (map.getPlayer().getHealth() <=0)
                 scene.setRoot(isOver());
 //            keyEvent.consume();
-        });
-
-//        MapExportImport.writeMapState(mapOfLevel2,"src/main/resources/tmp/mapExportNext.json");
-
-
-
-        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
             if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
                 levels.set(0,map);
                 map = levels.get(1);
@@ -311,10 +304,26 @@ public class Main extends Application {
                 map = levels.get(0);
             }
             refresh();
-
-
-
         });
+
+//        MapExportImport.writeMapState(mapOfLevel2,"src/main/resources/tmp/mapExportNext.json");
+
+
+//
+//        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+//            if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
+//                levels.set(0,map);
+//                map = levels.get(1);
+//            }
+//            if (map.getPlayer().getCell().getType().equals(CellType.GATE_UP)) {
+//                levels.set(1,map);
+//                map = levels.get(0);
+//            }
+//            refresh();
+//
+//
+//
+//        });
 
 
 
@@ -387,19 +396,15 @@ public class Main extends Application {
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
-                refresh();
                 break;
             case DOWN:
                 map.getPlayer().move(0, 1);
-                refresh();
                 break;
             case LEFT:
                 map.getPlayer().move(-1, 0);
-                refresh();
                 break;
             case RIGHT:
                 map.getPlayer().move(1, 0);
-                refresh();
                 break;
             case S:
                 Player player = map.getPlayer();

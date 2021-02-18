@@ -109,6 +109,7 @@ public class MapLoader {
             }
         }
         map.setActorList(actorsOnMap);
+        map.setItemList(itemsOnMap);
         return map;
     }
 

@@ -1,6 +1,8 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Item;
+import com.codecool.dungeoncrawl.model.ItemModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -10,10 +12,12 @@ import java.sql.SQLException;
 
 public class GameDatabaseManager {
     private PlayerDao playerDao;
+    private ItemDao itemDao;
 
     public void setup() throws SQLException, InvalidKeyException {
         DataSource dataSource = connect();
         playerDao = new PlayerDaoJdbc(dataSource);
+        itemDao = new ItemDaoJdbc(dataSource);
     }
 
     public void savePlayer(Player player) {
@@ -42,4 +46,9 @@ public class GameDatabaseManager {
 
         return dataSource;
     }
+
+    public void registerDefaultItem(Item item) {
+        ItemModel model = new ItemModel(item);
+        itemDao.addInDefault(model);
+    };
 }

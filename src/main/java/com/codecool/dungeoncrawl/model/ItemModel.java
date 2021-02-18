@@ -19,7 +19,7 @@ public class ItemModel extends BaseModel {
     }
 
     public ItemModel(Item item) {
-        this.className = item.getClass().getName();
+        this.className = item.getClass().getSimpleName();
         this.isInInventory = item.isInInventory;
         this.x = item.getX();
         this.y = item.getY();

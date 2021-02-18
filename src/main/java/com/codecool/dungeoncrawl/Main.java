@@ -34,7 +34,7 @@ import javafx.stage.Stage;
 import java.security.InvalidKeyException;
 import java.sql.SQLException;
 
-import java.util.LinkedList;
+
 import java.util.List;
 
 
@@ -69,6 +69,9 @@ public class    Main extends Application {
     List<Item> inventoryList = inventoryObject.getList();
     Button inventoryButton = new Button("Inventory");
     List<Actor> actorsOnMap;
+    List<Item> itemsOnMap;
+    private boolean hasSucceededConnection = false;
+    private boolean registerDefaultsInDb = false;
 
 
     public static void main(String[] args) {
@@ -77,7 +80,16 @@ public class    Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        itemsOnMap = map.getItemList(); // should be done for each level, not just 1st
         setupDbManager();
+        if (hasSucceededConnection) {
+            if (registerDefaultsInDb) {
+                for (Item item : itemsOnMap) {
+                    dbManager.registerDefaultItem(item);
+                }
+            }
+        }
+
 
         //TODO - add a UI element to set name
         Player player = map.getPlayer();
@@ -317,7 +329,9 @@ public class    Main extends Application {
         dbManager = new GameDatabaseManager();
         try {
             dbManager.setup();
+            hasSucceededConnection = true;
         } catch (SQLException | InvalidKeyException ex) {
+            hasSucceededConnection = false;
             System.out.println(ex.getMessage());
             System.out.println("Cannot connect to database.");
         }

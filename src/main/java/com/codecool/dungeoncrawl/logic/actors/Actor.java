@@ -48,59 +48,59 @@ public abstract class Actor implements Drawable {
 
     public void setDamage(int newValue) { this.damage = newValue; }
 
-    public void modifyAttribute(String attribute, Integer modifierValue) {
-        if (attributeModifierMap.containsKey(attribute)) {
-            Integer oldValue = attributeModifierMap.get(attribute);
-            attributeModifierMap.put(attribute, oldValue+modifierValue);
-        } else {
-            attributeModifierMap.put(attribute, modifierValue);
-        }
-    }
-
-    public void recalculateAttributes() throws NoSuchFieldException, IllegalAccessException {
-        Field[] allFields = this.getClass().getFields();
-        boolean hasModified = false;
-        for (Field attribute : allFields) {
-            if (attribute.getType().isAssignableFrom(Integer.class) ) {
-
-                if (attributeModifierMap.containsKey(attribute.getName())) {
-                    hasModified = true;
-                    Field attributeAsIntField = null;
-                    try {
-                         attributeAsIntField = this.getClass().getField(attribute.getName());
-                        attributeAsIntField.setAccessible(true);
-                    } catch (NoSuchFieldException e1) {
-                        e1.printStackTrace();
-                        throw new NoSuchFieldException("Can not get field [" + attribute.getName() +
-                                "] from " +
-                                this.getClass().getName());
-                    }
-                    Integer oldValue = null;
-                    try {
-                        oldValue = (Integer) attribute.get(this);
-                    } catch (IllegalAccessException e2) {
-                        e2.printStackTrace();
-                        throw new IllegalAccessException("Can not cast [" + attribute.getName() +
-                                "] gotten from " + this.getClass().getName() + " as Integer");
-                    }
-
-                    Integer newValue = oldValue + attributeModifierMap.get(attribute.getName());
-                    try {
-                        attributeAsIntField.setInt(this, newValue);
-                    } catch (Exception e3) {
-                        e3.printStackTrace();
-                        throw new IllegalAccessException("Can not set an int value to [" +
-                                attribute.getName() + "] gotten from " + this.getClass().getName());
-                    }
-
-
-                }
-            }
-        }
-        attributeModifierMap.clear();
-        if (!hasModified) {System.out.println("No attributes were modified!");}
-        else {System.out.println("Recalculation modified something. Proceeding as normal...");}
-    }
+//    public void modifyAttribute(String attribute, Integer modifierValue) {
+//        if (attributeModifierMap.containsKey(attribute)) {
+//            Integer oldValue = attributeModifierMap.get(attribute);
+//            attributeModifierMap.put(attribute, oldValue+modifierValue);
+//        } else {
+//            attributeModifierMap.put(attribute, modifierValue);
+//        }
+//    }
+//
+//    public void recalculateAttributes() throws NoSuchFieldException, IllegalAccessException {
+//        Field[] allFields = this.getClass().getFields();
+//        boolean hasModified = false;
+//        for (Field attribute : allFields) {
+//            if (attribute.getType().isAssignableFrom(Integer.class) ) {
+//
+//                if (attributeModifierMap.containsKey(attribute.getName())) {
+//                    hasModified = true;
+//                    Field attributeAsIntField = null;
+//                    try {
+//                         attributeAsIntField = this.getClass().getField(attribute.getName());
+//                        attributeAsIntField.setAccessible(true);
+//                    } catch (NoSuchFieldException e1) {
+//                        e1.printStackTrace();
+//                        throw new NoSuchFieldException("Can not get field [" + attribute.getName() +
+//                                "] from " +
+//                                this.getClass().getName());
+//                    }
+//                    Integer oldValue = null;
+//                    try {
+//                        oldValue = (Integer) attribute.get(this);
+//                    } catch (IllegalAccessException e2) {
+//                        e2.printStackTrace();
+//                        throw new IllegalAccessException("Can not cast [" + attribute.getName() +
+//                                "] gotten from " + this.getClass().getName() + " as Integer");
+//                    }
+//
+//                    Integer newValue = oldValue + attributeModifierMap.get(attribute.getName());
+//                    try {
+//                        attributeAsIntField.setInt(this, newValue);
+//                    } catch (Exception e3) {
+//                        e3.printStackTrace();
+//                        throw new IllegalAccessException("Can not set an int value to [" +
+//                                attribute.getName() + "] gotten from " + this.getClass().getName());
+//                    }
+//
+//
+//                }
+//            }
+//        }
+//        attributeModifierMap.clear();
+//        if (!hasModified) {System.out.println("No attributes were modified!");}
+//        else {System.out.println("Recalculation modified something. Proceeding as normal...");}
+//    }
 
 
     public Cell getCell() {

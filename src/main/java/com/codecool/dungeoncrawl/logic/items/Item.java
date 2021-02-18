@@ -6,12 +6,14 @@ import com.codecool.dungeoncrawl.logic.Drawable;
 public abstract class Item implements Drawable {
     private Cell cell;
     public Integer durability;
+    public boolean isInInventory;
 
 
     public Item(Cell cell) {
         this.cell = cell;
         this.cell.setItem(this);
         this.durability = 100;
+        this.isInInventory = false;
     }
 
     public Cell getCell() {

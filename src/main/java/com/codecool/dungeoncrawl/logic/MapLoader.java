@@ -6,6 +6,8 @@ import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Sword;
 
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MapLoader {
@@ -15,6 +17,7 @@ public class MapLoader {
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();
         int height = scanner.nextInt();
+        List<Actor> actorsOnMap = new LinkedList<>();
 
         scanner.nextLine(); // empty line
 
@@ -36,7 +39,7 @@ public class MapLoader {
                             break;
                         case 's':
                             cell.setType(CellType.FLOOR);
-                            new Skeleton(cell);
+                            actorsOnMap.add(new Skeleton(cell));
                             break;
                         case '@':
                             cell.setType(CellType.FLOOR);
@@ -80,15 +83,19 @@ public class MapLoader {
                             break;
                         case 'z':
                             cell.setType(CellType.FLOOR);
-                            new Zombie(cell);
+                            actorsOnMap.add(new Zombie(cell));
                             break;
-                        case 'G':
+                        case 'O':
                             cell.setType(CellType.FLOOR2);
-                            new Ghost(cell);
+                            actorsOnMap.add(new Ghost(cell));
                             break;
                         case 'B':
                             cell.setType(CellType.FLOOR2);
-                            new Boss(cell);
+                            actorsOnMap.add(new Boss(cell));
+                            break;
+                        case 'o':
+                            cell.setType(CellType.FLOOR);
+                            actorsOnMap.add(new Slime(cell));
                             break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
@@ -96,6 +103,7 @@ public class MapLoader {
                 }
             }
         }
+        map.setActorList(actorsOnMap);
         return map;
     }
 

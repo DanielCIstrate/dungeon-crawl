@@ -11,6 +11,7 @@ import com.codecool.dungeoncrawl.logic.items.Weapon;
 import static com.codecool.dungeoncrawl.ui.GameLog.getGameLog;
 
 public class Player extends Actor {
+
     public String name;
 
     public Player(String newName, Cell cell) {
@@ -19,7 +20,7 @@ public class Player extends Actor {
         this.name = newName;
     }
 
-    public Player(Cell cell){
+    public Player(Cell cell) {
         super(cell);
         this.setDamage(5);
         this.name = "Angus";

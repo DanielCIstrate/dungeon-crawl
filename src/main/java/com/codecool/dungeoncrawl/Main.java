@@ -3,11 +3,13 @@ package com.codecool.dungeoncrawl;
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
+import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.model.ActorModel;
 import com.codecool.dungeoncrawl.ui.GameLog;
 import com.codecool.dungeoncrawl.ui.Tiles;
+import com.codecool.dungeoncrawl.logic.MapExportImport;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -20,32 +22,42 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.security.InvalidKeyException;
-import java.sql.SQLException;
 
+import java.security.InvalidKeyException;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.codecool.dungeoncrawl.logic.Test.*;
+import javafx.stage.Window;
+
+import javax.xml.stream.EventFilter;
 
 
-
-
-
-
-public class    Main extends Application {
-
-    GameMap map = MapLoader.loadMap("/map.txt");
+public class Main extends Application {
+    List<GameMap> levels = new LinkedList<>();
+    GameMap mapOfLevel1 = MapLoader.loadMap("/map.txt");
     GameMap mapOfLevel2 = MapLoader.loadMap("/map2.txt");
+    GameMap map = mapOfLevel1;
+
+
+
+
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -83,8 +95,11 @@ public class    Main extends Application {
         Player player = map.getPlayer();
         player.setName("Zorro");
 
-
         gameLog.pushInLog("Good luck " + player.getName());
+        levels.add(mapOfLevel1);
+        levels.add(mapOfLevel2);
+        map = levels.get(0);
+        refresh();
         uiDashboard.setPrefWidth(200);
         uiDashboard.setPadding(new Insets(2));
         uiDashboard.setVgap(10);
@@ -158,44 +173,155 @@ public class    Main extends Application {
 
         BorderPane borderPane = new BorderPane();
 
+        BorderPane dashboardPane = new BorderPane();
+        dashboardPane.setTop(this.uiDashboard);
 
         borderPane.setCenter(canvas);
         borderPane.setBottom(uiBottomPane);
-        borderPane.setRight(this.uiDashboard);
+        borderPane.setRight(dashboardPane);
+
+        // Save, Load, Export, Import interfaces
+        VBox vbMenuOptions = new VBox();
+        HBox hbExportOptions = new HBox();
+        dashboardPane.setBottom(vbMenuOptions);
+        //Export Button
+        Button exportButton = new Button("Export");
+        exportButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(final ActionEvent event) {
+                          Stage dialog =  new Stage();
+                          dialog.initModality(Modality.APPLICATION_MODAL);
+                          dialog.initOwner(primaryStage);
+                        FileChooser fileChooser = new FileChooser();
+                        fileChooser.setInitialDirectory(new File("src/main/resources/exports"));
+
+
+                        fileChooser.setTitle("Exporting game...");
+                        fileChooser.setInitialFileName("my-fantastic-game");
+                        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON file","*.json"),
+                                new FileChooser.ExtensionFilter("All Files", "*.*"));
+                        File file = fileChooser.showSaveDialog(dialog);
+
+                        if (file != null) {
+                            try {
+                                fileChooser.setInitialDirectory(file.getParentFile());//save to initial directory
+                                String filenameTmp = file.getName();
+                                //removing if json exists in filenameTmp remove it
+                                String[] ArrayOfFilename = filenameTmp.split("\\.");
+                                List<String> ListOfFilename = new ArrayList<String>(Arrays.asList(ArrayOfFilename));
+                                ListOfFilename.remove("json");
+                                ArrayOfFilename = ListOfFilename.toArray(new String[0]);
+
+                                StringBuilder buildString = new StringBuilder(ArrayOfFilename[0]);
+                                if (ArrayOfFilename.length > 1) {
+                                    for (int i = 1; i < ArrayOfFilename.length;i++) {
+                                        buildString.append(".");
+                                        buildString.append(ArrayOfFilename[i]);
+                                    }
+                                }
+                                String filename = buildString.toString();
+                                System.out.println(Arrays.toString(filename.split("\\.")));
+                                MapExportImport.writeMapState(map,"src/main/resources/exports/" + filename + ".json" );
+                                gameLog.pushInLog("Game has been exported as " + filename);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        event.consume();
+
+
+
+                    }
+                }
+        );
+        //Import Button
+        Button importButton = new Button("Import");
+        importButton.setOnAction(new EventHandler<ActionEvent>() {
+                                     @Override
+                                     public void handle(final ActionEvent event) {
+                                         Stage dialog = new Stage();
+                                         dialog.initModality(Modality.APPLICATION_MODAL);
+                                         dialog.initOwner(primaryStage);
+                                         FileChooser fileChooser = new FileChooser();
+                                         fileChooser.setInitialDirectory(new File("src/main/resources/exports"));
+
+
+                                         fileChooser.setTitle("Importing game...");
+                                         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Files", "*.*"));
+                                         File file = fileChooser.showOpenDialog(dialog);
+
+                                         try {
+                                             fileChooser.setInitialDirectory(file.getParentFile());//save to initial directory
+                                             String filename = file.getName();
+                                             if (!filename.equals("")) {
+                                                 //checks if extension is json
+                                                 String[] filenameSplit = filename.split("\\.");
+                                                 String extension = filenameSplit[filenameSplit.length-1];
+                                                 if (extension.equals("json")) {
+                                                     map = MapExportImport.readMapState("src/main/resources/exports/" + filename);
+                                                     gameLog.pushInLog("File " + filename + " has been imported");
+                                                     System.out.println("import successful");
+                                                     refresh();
+                                                 }
+//                                dialog.setTitle(file.getName());
+                                             }
+                                         } catch (Exception e) {
+                                             e.printStackTrace();
+                                         }
+
+
+//                        Scene scene = new Scene(new VBox(), 300, 250);
+//                        dialog.setScene(scene);
+//                        dialog.show();
+                                         event.consume();
+
+
+                                     }
+                                 }
+        );
+
+        // Export Import Hbox
+        hbExportOptions.setSpacing(5);
+        hbExportOptions.getChildren().addAll(exportButton,importButton);
+
+        HBox hbSaveOptions = new HBox();
+        hbSaveOptions.setManaged(false);
+        vbMenuOptions.getChildren().addAll(hbExportOptions,hbSaveOptions);
+
+
+
+
         Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
-        scene.setOnKeyReleased(this::onKeyReleased);
+//        scene.setOnKeyPressed(this::onKeyPressed);
+//        scene.setOnKeyReleased(this::onKeyReleased);
 
         scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
             onKeyPressed(keyEvent);
-            if (map.getPlayer().getHealth() <=0)
+            if (map.getPlayer().getHealth() <=0) {
                 scene.setRoot(isOver());
-            keyEvent.consume();
-        });
-
-        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+            }
             if (map.getPlayer().getCell().getType().equals(CellType.GATE)) {
-                map = mapOfLevel2;
-                refresh();
-                keyEvent.consume();
-                }
-        });
-
-
-
-        scene.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
+                levels.set(0,map);
+                map = levels.get(1);
+                if (map.getPlayer().getCell().getType().equals(CellType.FLOOR))
+                    map.getPlayer().getCell().setType(CellType.FLOOR2);
+            } else if (map.getPlayer().getCell().getType().equals(CellType.GATE_UP)) {
+                levels.set(1,map);
+                map = levels.get(0);
+            }
             if(map.getPlayer().getCell().getType().equals(CellType.GATE_FINAL)) {
                 System.out.println("Final");
                 Parent over = isOver();
                 scene.setRoot(over);
-                refresh();
                 keyEvent.consume();
-
-
             }
+            refresh();
         });
+
+
                 primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
     }
@@ -253,22 +379,18 @@ public class    Main extends Application {
             case UP:
                 Common.turnCounter++;
                 map.getPlayer().move(0, -1);
-                refresh();
                 break;
             case DOWN:
                 Common.turnCounter++;
                 map.getPlayer().move(0, 1);
-                refresh();
                 break;
             case LEFT:
                 Common.turnCounter++;
                 map.getPlayer().move(-1, 0);
-                refresh();
                 break;
             case RIGHT:
                 Common.turnCounter++;
                 map.getPlayer().move(1, 0);
-                refresh();
                 break;
             case S:
                 Player player = map.getPlayer();
@@ -294,21 +416,20 @@ public class    Main extends Application {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
+                } else if (cell.getItem() != null) {
+                    Tiles.drawTile(context, cell.getItem(), x, y);
                 } else {
-                    if (cell.getItem() != null) {
-                        Tiles.drawTile(context, cell.getItem(), x, y);
-                    } else {
-                        Tiles.drawTile(context, cell, x, y);
-                    }
+                    Tiles.drawTile(context, cell, x, y);
                 }
             }
         }
 
+
 //        gameLog.pushInLog("Refresh happened!");
         healthLabel.setText("" + map.getPlayer().getHealth());
         damageLabel.setText("" + map.getPlayer().getCalculatedDamageString());
-    }
 
+    }
 
     private void setupDbManager() {
         dbManager = new GameDatabaseManager();

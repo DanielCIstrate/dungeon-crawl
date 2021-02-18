@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.*;
 import com.codecool.dungeoncrawl.logic.decoration.Decoration;
+import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.items.Key;
 import com.codecool.dungeoncrawl.logic.items.Sword;
 
@@ -18,6 +19,8 @@ public class MapLoader {
         int width = scanner.nextInt();
         int height = scanner.nextInt();
         List<Actor> actorsOnMap = new LinkedList<>();
+        List<Item> itemsOnMap = new LinkedList<>();
+        Item currentItem;
 
         scanner.nextLine(); // empty line
 
@@ -47,11 +50,13 @@ public class MapLoader {
                             break;
                         case '$':
                             cell.setType(CellType.FLOOR);
-                            new Sword(cell);
+                            currentItem = new Sword(cell);
+                            updateWithDefaultId(currentItem, itemsOnMap);
                             break;
                         case 'k':
                             cell.setType(CellType.FLOOR);
-                            new Key(cell);
+                            currentItem = new Key(cell);
+                            updateWithDefaultId(currentItem, itemsOnMap);
                             break;
                         case 'c':
                             cell.setType(CellType.CLOSED_DOOR);
@@ -105,6 +110,12 @@ public class MapLoader {
         }
         map.setActorList(actorsOnMap);
         return map;
+    }
+
+    private static void updateWithDefaultId(Item currentItem, List<Item> itemsOnMap) {
+        Common.itemIdCounter++;
+        currentItem.setDefaultId(Common.itemIdCounter);
+        itemsOnMap.add(currentItem);
     }
 
 }

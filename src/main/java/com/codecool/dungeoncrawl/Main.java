@@ -101,7 +101,10 @@ public class    Main extends Application {
         pickUp.setVisible(false);
         pickUp.managedProperty().bind(pickUp.visibleProperty());
         pickUp.addEventHandler(MouseEvent.MOUSE_CLICKED, clickEvent ->{
-            inventoryList.add(map.getPlayer().getCell().getItem());
+            Item pickedUpItem = map.getPlayer().getCell().getItem();
+            pickedUpItem.isInInventory = true;
+            pickedUpItem.setCell(null);
+            inventoryList.add(pickedUpItem);
             gameLog.pushInLog("Items: ");
             for (Item item: inventoryList) {
                 gameLog.pushInLog(item.getClass().getSimpleName());
@@ -281,8 +284,8 @@ public class    Main extends Application {
 
     private void refresh() {
         actorsOnMap = map.getActorList();
-        for (Actor someActor : actorsOnMap) {            
-            
+        for (Actor someActor : actorsOnMap) {
+
             someActor.doMoveLogic();
         }
         pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);

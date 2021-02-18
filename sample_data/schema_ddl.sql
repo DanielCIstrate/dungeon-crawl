@@ -65,6 +65,8 @@ CREATE TABLE public.default_item  (
     y integer
 );
 
+
+
 ALTER TABLE ONLY public.game_state
     ADD CONSTRAINT fk_player_id FOREIGN KEY (player_id) REFERENCES public.player(id);
 

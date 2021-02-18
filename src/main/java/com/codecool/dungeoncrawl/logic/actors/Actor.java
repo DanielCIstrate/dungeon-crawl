@@ -21,6 +21,7 @@ public abstract class Actor implements Drawable {
     private static Map<String, Integer> attributeModifierMap = new HashMap<>();
     private int health;
     private int damage;
+    private int defaultId;
 
     public Actor(Cell cell) {
         this.cell = cell;

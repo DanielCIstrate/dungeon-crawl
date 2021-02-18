@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.logic.*;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
+import com.codecool.dungeoncrawl.model.ActorModel;
 import com.codecool.dungeoncrawl.ui.GameLog;
 import com.codecool.dungeoncrawl.ui.Tiles;
 
@@ -30,6 +31,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.security.InvalidKeyException;
 import java.sql.SQLException;
 
 import java.util.LinkedList;
@@ -279,7 +281,8 @@ public class    Main extends Application {
 
     private void refresh() {
         actorsOnMap = map.getActorList();
-        for (Actor someActor : actorsOnMap) {
+        for (Actor someActor : actorsOnMap) {            
+            
             someActor.doMoveLogic();
         }
         pickUp.visibleProperty().set(map.getPlayer().getCell().getItem() != null);
@@ -311,7 +314,8 @@ public class    Main extends Application {
         dbManager = new GameDatabaseManager();
         try {
             dbManager.setup();
-        } catch (SQLException ex) {
+        } catch (SQLException | InvalidKeyException ex) {
+            System.out.println(ex.getMessage());
             System.out.println("Cannot connect to database.");
         }
     }

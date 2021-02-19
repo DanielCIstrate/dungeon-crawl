@@ -13,7 +13,7 @@ public class MapExportImport implements Serializable {
         try {
             exportStream = new FileOutputStream(filename);
             ObjectOutputStream mapState = new ObjectOutputStream(exportStream);
-            mapState.writeObject(new ExportObject(map,inventory));
+            mapState.writeObject(new ExportObject(map,inventory, Common.level));
             mapState.flush();
             mapState.close();
         } catch (FileNotFoundException e) {

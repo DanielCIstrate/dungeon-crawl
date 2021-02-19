@@ -8,10 +8,12 @@ import java.io.Serializable;
 public class ExportObject implements Serializable {
     private GameMap exportedMapState;
     private Inventory exportedInventory;
+    private int currentLevel;
 
-    public ExportObject(GameMap currentMapState, Inventory currentInventory) {
+    public ExportObject(GameMap currentMapState, Inventory currentInventory, int currentLevel) {
         this.exportedInventory = currentInventory;
         this.exportedMapState = currentMapState;
+        this.currentLevel = currentLevel;
     }
 
     public GameMap getExportedMapState() {
@@ -28,5 +30,13 @@ public class ExportObject implements Serializable {
 
     public void setExportedInventory(Inventory exportedInventory) {
         this.exportedInventory = exportedInventory;
+    }
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public void setCurrentLevel(int currentLevel) {
+        this.currentLevel = currentLevel;
     }
 }

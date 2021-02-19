@@ -6,6 +6,7 @@ import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.impex.DataModelSave;
+import com.codecool.dungeoncrawl.logic.impex.ExportObject;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.model.GameState;
 import com.codecool.dungeoncrawl.ui.GameLog;
@@ -271,9 +272,11 @@ public class Main extends Application {
                          String extension = filenameSplit[filenameSplit.length-1];
                          if (extension.equals("json")) {
                              String path = "src/main/resources/exports/";
-                             map = MapExportImport.readExport(path + filename).getExportedMapState();
+                             ExportObject importedObject = MapExportImport.readExport(path + filename);
+                             map = importedObject.getExportedMapState();
                              inventoryList.clear();
-                             inventoryList.addAll(MapExportImport.readExport(path + filename).getExportedInventory().getList());
+                             inventoryList.addAll(importedObject.getExportedInventory().getList());
+                             Common.level = importedObject.getCurrentLevel();
                              gameLog.pushInLog("File " + filename + " has been imported");
                              System.out.println("import successful");
                              refresh();

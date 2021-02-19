@@ -37,10 +37,7 @@ import javafx.stage.Stage;
 import java.security.InvalidKeyException;
 import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 public class Main extends Application {
@@ -104,7 +101,15 @@ public class Main extends Application {
 
         //TODO - add a UI element to set name
         Player player = map.getPlayer();
-        player.setName("Zorro");
+//        player.setName("Zorro");
+        TextInputDialog namingWindow = new TextInputDialog();
+        namingWindow.setTitle("A new hero joins the adventure...");
+        namingWindow.setHeaderText("Please state your name ");
+        namingWindow.setContentText("Name:");
+        Optional<String> name = namingWindow.showAndWait();
+        name.ifPresent(player::setName);
+
+
 
         gameLog.pushInLog("Good luck " + player.getName());
 

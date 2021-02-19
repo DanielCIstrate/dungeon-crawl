@@ -158,3 +158,6 @@ buildNumber.properties
 
 # temp folder
 /temp/
+
+# Exports folder
+/src/main/resources/exports/*.json

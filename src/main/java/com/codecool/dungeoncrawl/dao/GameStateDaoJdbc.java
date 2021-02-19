@@ -53,11 +53,11 @@ public class GameStateDaoJdbc implements GameStateDao {
     public GameState get(int id) {
         try (Connection conn = dataSource.getConnection()){
             String sql = "SELECT " +
-                    "g.current_map, g.saved_at, p.player_name, p.hp, p.x, p.y " +
+                    "gs.current_map, gs.saved_at, p.player_name, p.hp, p.x, p.y " +
                     "FROM " +
-                    "game_state AS g INNER JOIN player AS p " +
-                    "ON (p.id = g.player_id) " +
-                    "WHERE g.id = ?";
+                    "game_state AS gs INNER JOIN player AS p " +
+                    "ON (p.id = gs.player_id) " +
+                    "WHERE gs.id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet result = statement.executeQuery();

@@ -9,4 +9,6 @@ public interface GameStateDao {
     void update(GameState state);
     GameState get(int id);
     List<GameState> getAll();
+
+    void addInItemLinkTable(int gameStateId, int itemId);
 }

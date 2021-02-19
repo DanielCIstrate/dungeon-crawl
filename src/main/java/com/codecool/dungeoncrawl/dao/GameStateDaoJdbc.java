@@ -9,8 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameStateDaoJdbc implements GameStateDao {
-    DataSource dataSource;
-    public GameStateDaoJdbc (DataSource dataSource) {this.dataSource = dataSource;}
+    private DataSource dataSource;
+
+    public GameStateDaoJdbc(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public void add(GameState state) {
@@ -69,5 +72,30 @@ public class GameStateDaoJdbc implements GameStateDao {
     @Override
     public List<GameState> getAll() {
         return null;
+    }
+
+    @Override
+    public void addInItemLinkTable(int gameStateId, int itemId) {
+        try(Connection connectionObject = dataSource.getConnection()) {
+            String sqlQuery = "INSERT INTO gamestate_item (gamestate_id, item_id) VALUES (?, ?)";
+            PreparedStatement precompiledQuery = connectionObject.prepareStatement(
+                    sqlQuery,
+                    Statement.RETURN_GENERATED_KEYS
+            );
+
+
+            precompiledQuery.setInt(1, gameStateId);
+            precompiledQuery.setInt(2, itemId);
+            precompiledQuery.executeUpdate();
+            ResultSet resultCursor = precompiledQuery.getGeneratedKeys();   // get results Map/dictionary (using the
+
+            resultCursor.next();
+
+        } catch(
+                SQLException throwables)
+
+        {
+            throw new RuntimeException("Error while linking item "+itemId+" to gamestate "+gameStateId, throwables);
+        }
     }
 }

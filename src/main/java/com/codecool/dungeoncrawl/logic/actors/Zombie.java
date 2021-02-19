@@ -2,15 +2,18 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 
+public class Zombie extends Enemy{
 
-public class Skeleton extends Enemy {
-    public Skeleton(Cell cell) {
+    public Zombie(Cell cell) {
         super(cell);
-        this.setDamage(2);
+        this.setSpeed(0.25);
+        this.setDamage(5);
+        this.setHealth(11);
+
     }
 
     @Override
     public String getTileName() {
-        return "skeleton";
+        return "zombie";
     }
 }

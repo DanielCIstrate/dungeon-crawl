@@ -68,28 +68,31 @@ CREATE TABLE public.default_item  (
 
 
 ALTER TABLE ONLY public.game_state
-    ADD CONSTRAINT fk_player_id FOREIGN KEY (player_id) REFERENCES public.player(id);
+    ADD CONSTRAINT fk_player_id FOREIGN KEY (player_id) REFERENCES public.player(id)
+        ON DELETE CASCADE;
+
 
 ALTER TABLE ONLY public.gamestate_actor
     ADD CONSTRAINT pk_gamestate_actor_id PRIMARY KEY (gamestate_id, actor_id);
 
 ALTER TABLE ONLY public.gamestate_actor
-    ADD CONSTRAINT fk_gamestate_id FOREIGN KEY (gamestate_id) REFERENCES public.game_state(id);
+    ADD CONSTRAINT fk_gamestate_id FOREIGN KEY (gamestate_id) REFERENCES public.game_state(id)
+        ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.gamestate_actor
-    ADD CONSTRAINT fk_actor_id FOREIGN KEY (actor_id) REFERENCES public.actor(id);
+    ADD CONSTRAINT fk_actor_id FOREIGN KEY (actor_id) REFERENCES public.actor(id) ON DELETE CASCADE ;
 
 ALTER TABLE ONLY public.gamestate_item
     ADD CONSTRAINT pk_gamestate_item_id PRIMARY KEY (gamestate_id, item_id);
 
 ALTER TABLE ONLY public.gamestate_item
-    ADD CONSTRAINT fk_gamestate_id FOREIGN KEY (gamestate_id) REFERENCES public.game_state(id);
+    ADD CONSTRAINT fk_gamestate_id FOREIGN KEY (gamestate_id) REFERENCES public.game_state(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.gamestate_item
-    ADD CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES public.item(id);
+    ADD CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES public.item(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.actor
-    ADD CONSTRAINT fk_default_id FOREIGN KEY (default_id) REFERENCES public.default_actor(id);
+    ADD CONSTRAINT fk_default_id FOREIGN KEY (default_id) REFERENCES public.default_actor(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY public.item
-    ADD CONSTRAINT fk_default_id FOREIGN KEY (default_id) REFERENCES public.default_item(id);
+    ADD CONSTRAINT fk_default_id FOREIGN KEY (default_id) REFERENCES public.default_item(id) ON DELETE CASCADE;
